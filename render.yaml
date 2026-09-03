@@ -1,0 +1,22 @@
+services:
+  - type: worker
+    name: comfy-discord-image-bot
+    rootDir: discord-image-bot
+    runtime: node
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run start
+    initialDeployHook: npm run register
+    autoDeploy: false
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: DISCORD_APPLICATION_ID
+        sync: false
+      - key: COMFY_BASE_URL
+        value: https://cloud.comfy.org
+      - key: COMFY_API_KEY
+        sync: false
+      - key: COMFY_PROMPT_NODE_ID
+        value: "30:19"
+      - key: COMFY_PROMPT_INPUT
+        value: value

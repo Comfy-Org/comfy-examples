@@ -1,0 +1,21 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": { "image": "__ASSET__" }
+  },
+  "2": {
+    "class_type": "ImageScaleBy",
+    "inputs": {
+      "image": ["1", 0],
+      "upscale_method": "lanczos",
+      "scale_by": 4
+    }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["2", 0],
+      "filename_prefix": "upscaled"
+    }
+  }
+}
