@@ -36,7 +36,29 @@ Comfy Developer Platform deployment:
 Build (models + custom nodes) → Release → Serverless deployment → this app
 ```
 
-Create or select a deployment in the [Comfy Developer Platform](https://platform.comfy.org), then copy its `https://<deployment>.run.comfy.app` URL into `COMFY_BASE_URL`. The app sends `workflow_api.json` to that endpoint with the Comfy SDK. The deployment must contain the models and nodes used by the workflow. See the [Comfy Serverless guide](https://docs.comfy.org/development/serverless/overview) and [SDK guide](https://docs.comfy.org/development/api-development/sdks).
+The app sends `workflow_api.json` to that endpoint with the Comfy SDK. The deployment must contain the models and nodes used by the workflow.
+
+### Build a custom runtime
+
+Use this when the workflow needs a model or custom node that is not already on Comfy Cloud:
+
+```bash
+# Run from a local ComfyUI environment that already has the required models
+# and custom_nodes installed and tested.
+comfy cloud login
+comfy build scan -o build.json
+comfy build create --from build.json --name img2img-web-app --execute
+```
+
+`scan` reads the local environment; `--execute` uploads the definition and any
+private model blobs to the Developer Platform, where the serverless build is
+created. The CLI does not create the endpoint. Open
+[Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
+select the new build version, create a **Deployment**, then copy its
+`https://dep-...run.comfy.app` URL into `COMFY_BASE_URL`.
+
+Custom nodes do not need to be published to the public Registry; they only need
+to be installed in the local environment before scanning.
 
 ## API integration
 

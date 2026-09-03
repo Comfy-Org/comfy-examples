@@ -20,6 +20,24 @@ Set `COMFY_API_KEY` in `.env.local`. The default `COMFY_BASE_URL` is Comfy
 Cloud; replace it with a Developer Platform Serverless deployment URL when the
 workflow is installed there.
 
+## Use custom nodes or models
+
+For a workflow that needs custom nodes or non-default models, prepare a local
+ComfyUI environment with those dependencies installed and tested, then run:
+
+```bash
+comfy cloud login
+comfy build scan -o build.json
+comfy build create --from build.json --name sketch-to-image --execute
+```
+
+The scan is local. The `--execute` step creates the serverless build on the
+Developer Platform, but the CLI does not create the endpoint. Open
+[Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
+create a **Deployment** from that build version, then set `COMFY_BASE_URL` to
+the resulting `https://dep-...run.comfy.app` URL. The custom nodes do not need
+a public Registry release.
+
 ## Use it
 
 Draw or import a guide, describe the result, and render. Changes to the sketch

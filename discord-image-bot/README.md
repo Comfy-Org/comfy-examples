@@ -67,6 +67,24 @@ The bundled `workflows/workflow_api.json` is an API-format text-to-image
 example. `COMFY_BASE_URL` defaults to Comfy Cloud. Replace it with a
 Developer Platform Serverless URL when your workflow needs a custom deployment.
 
+### Use custom nodes or models
+
+Create the serverless runtime from a local, tested ComfyUI environment:
+
+```bash
+comfy cloud login
+comfy build scan -o build.json
+comfy build create --from build.json --name discord-image-bot --execute
+```
+
+The scan runs locally; the `--execute` step creates the build on the Developer
+Platform, but not the endpoint. Open
+[Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
+create a **Deployment** from the resulting build version, then set Render's
+`COMFY_BASE_URL` to its `https://dep-...run.comfy.app` URL. Custom nodes only
+need to be present in the scanned environment; they do not need to be publicly
+published.
+
 ```text
 User prompt input: 30:19.value
 Output: SaveImage
