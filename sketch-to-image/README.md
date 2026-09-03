@@ -27,16 +27,17 @@ ComfyUI environment with those dependencies installed and tested, then run:
 
 ```bash
 comfy cloud login
-comfy build scan -o build.json
-comfy build create --from build.json --name sketch-to-image --execute
+comfy build init --name sketch-to-image
+comfy build push --release --target linux/nvidia
+comfy deploy up --watch
 ```
 
-The scan is local. The `--execute` step creates the serverless build on the
-Developer Platform, but the CLI does not create the endpoint. Open
+`build init` scans locally. `build push --release` uploads the build and cuts a
+Linux/NVIDIA release. `deploy up --watch` creates the deployment and waits for
+it to become ready. Use `comfy deploy ls` or open
 [Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
-create a **Deployment** from that build version, then set `COMFY_BASE_URL` to
-the resulting `https://dep-...run.comfy.app` URL. The custom nodes do not need
-a public Registry release.
+then set `COMFY_BASE_URL` to the resulting `https://dep-...run.comfy.app` URL.
+The custom nodes do not need a public Registry release.
 
 ## Use it
 

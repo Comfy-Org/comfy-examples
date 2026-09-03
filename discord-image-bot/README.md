@@ -73,17 +73,18 @@ Create the serverless runtime from a local, tested ComfyUI environment:
 
 ```bash
 comfy cloud login
-comfy build scan -o build.json
-comfy build create --from build.json --name discord-image-bot --execute
+comfy build init --name discord-image-bot
+comfy build push --release --target linux/nvidia
+comfy deploy up --watch
 ```
 
-The scan runs locally; the `--execute` step creates the build on the Developer
-Platform, but not the endpoint. Open
+`build init` scans locally. `build push --release` uploads the build and cuts a
+Linux/NVIDIA release. `deploy up --watch` creates the deployment and waits for
+it to become ready. Use `comfy deploy ls` or open
 [Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
-create a **Deployment** from the resulting build version, then set Render's
-`COMFY_BASE_URL` to its `https://dep-...run.comfy.app` URL. Custom nodes only
-need to be present in the scanned environment; they do not need to be publicly
-published.
+then set Render's `COMFY_BASE_URL` to its `https://dep-...run.comfy.app` URL.
+Custom nodes only need to be present in the scanned environment; they do not
+need to be publicly published.
 
 ```text
 User prompt input: 30:19.value
