@@ -1,6 +1,6 @@
-# Comfy API app template
+# Img2img web app
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fimage-upscaler&env=COMFY_BASE_URL%2CCOMFY_API_KEY&envDefaults=%7B%22COMFY_BASE_URL%22%3A%22https%3A%2F%2Fcloud.comfy.org%22%7D&envDescription=Comfy%20Cloud%20is%20pre-filled.%20Replace%20it%20with%20your%20Comfy%20Serverless%20deployment%20URL%20if%20needed%2C%20then%20enter%20your%20Comfy%20API%20key.)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fimg2img-web-app&env=COMFY_BASE_URL%2CCOMFY_API_KEY&envDefaults=%7B%22COMFY_BASE_URL%22%3A%22https%3A%2F%2Fcloud.comfy.org%22%7D&envDescription=Comfy%20Cloud%20is%20pre-filled.%20Replace%20it%20with%20your%20Comfy%20Serverless%20deployment%20URL%20if%20needed%2C%20then%20enter%20your%20Comfy%20API%20key.)
 
 One private Comfy workflow becomes one simple app: upload an image, submit a
 job, poll it, and display the result.
