@@ -1,7 +1,6 @@
 services:
   - type: worker
     name: comfy-discord-image-bot
-    rootDir: discord-image-bot
     runtime: node
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
