@@ -1,0 +1,17 @@
+[
+  { "op": "add_node", "class_type": "LayerUtility: LoadSmolLM2Model", "as": "model" },
+  { "op": "set_widget", "node": "model", "widget": "model", "value": "SmolLM2-360M-Instruct" },
+  { "op": "set_widget", "node": "model", "widget": "dtype", "value": "bf16" },
+  { "op": "set_widget", "node": "model", "widget": "device", "value": "cuda" },
+  { "op": "add_node", "class_type": "LayerUtility: SmolLM2", "as": "reply" },
+  { "op": "add_node", "class_type": "StringConcatenate", "as": "speech_prefix" },
+  { "op": "set_widget", "node": "speech_prefix", "widget": "string_a", "value": "integrated_multimodal_description:\n<Picture 1> is the sole visual reference and the only subject. Preserve the exact face, age, hairstyle, clothing, posture, lighting, and setting from <Picture 1>; do not redesign, replace, or add people.\n[Shot 1] A single uninterrupted medium-close shot of <Subject 1>, the person in <Picture 1>. <Subject 1> (S1) faces the camera, makes subtle natural synchronized mouth movements, and clearly says, <d>[English]" },
+  { "op": "set_widget", "node": "speech_prefix", "widget": "delimiter", "value": "" },
+  { "op": "add_node", "class_type": "StringConcatenate", "as": "h3_prompt" },
+  { "op": "set_widget", "node": "h3_prompt", "widget": "string_b", "value": "</d>. The quoted line is the only vocal event; it must be audible, intelligible, and synchronized to the subject's lips.\n\noverall_soundscape:\nQuiet indoor room tone only, kept below the spoken voice.\n\nnon_diegetic_music:\nN/A. No music, no score, no singing, no narration, no extra voices, no subtitles, and no cuts." },
+  { "op": "set_widget", "node": "h3_prompt", "widget": "delimiter", "value": "" },
+  { "op": "connect", "from": "model.smolLM2_model", "to": "reply.smolLM2_model" },
+  { "op": "connect", "from": "reply.text", "to": "speech_prefix.string_b" },
+  { "op": "connect", "from": "speech_prefix.STRING", "to": "h3_prompt.string_a" },
+  { "op": "connect", "from": "h3_prompt.STRING", "to": "105.prompt" }
+]
