@@ -21,8 +21,10 @@ async function portraitAsset(comfy: Comfy, figure: Figure) {
     const bytes = new Uint8Array(await readFile(join(process.cwd(), "public", figure.image.slice(1))));
     return comfy.assets.fromBytes(bytes, { filename: `${figure.id}.png`, contentType: "image/png" });
   }
-  const response = await fetch(figure.image);
-  if (!response.ok) throw new Error(`Unable to fetch the portrait for ${figure.name}.`);
+  const response = await fetch(figure.image, { signal: AbortSignal.timeout(10_000) });
+  if (!response.ok || !response.headers.get("content-type")?.startsWith("image/")) {
+    throw new Error(`Unable to fetch the portrait for ${figure.name}.`);
+  }
   const bytes = new Uint8Array(await response.arrayBuffer());
   return comfy.assets.fromBytes(bytes, { filename: `${figure.id}.jpg`, contentType: "image/jpeg" });
 }

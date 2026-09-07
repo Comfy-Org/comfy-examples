@@ -16,16 +16,28 @@ function validateMessages(value: unknown): asserts value is Message[] {
 }
 
 export async function POST(request: Request) {
+  let body: { figureId?: unknown; messages?: unknown; previousVideoUrl?: unknown };
   try {
-    const body = await request.json() as { figureId?: unknown; messages?: unknown; previousVideoUrl?: unknown };
+    body = await request.json() as typeof body;
+  } catch {
+    return NextResponse.json({ error: "Send a valid JSON request." }, { status: 400 });
+  }
+
+  let figure;
+  try {
     if (typeof body.figureId !== "string") throw new Error("Choose a historical figure.");
-    const figure = findFigure(body.figureId);
+    figure = findFigure(body.figureId);
     if (!figure) throw new Error("That historical figure is unavailable.");
     validateMessages(body.messages);
     if (body.previousVideoUrl !== undefined && typeof body.previousVideoUrl !== "string") throw new Error("The previous video URL is invalid.");
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 400 });
+  }
+
+  try {
     const job = await submitConversation(figure, body.messages, body.previousVideoUrl);
     return NextResponse.json(job, { status: 202 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 400 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 502 });
   }
 }

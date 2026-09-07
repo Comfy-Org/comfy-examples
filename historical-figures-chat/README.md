@@ -9,7 +9,7 @@ browser message → protected Next.js API → Comfy SDK → LLM + H3 workflow �
 ## Experience
 
 - Eight public-domain portrait cards provide entry points: Ada Lovelace, Frederick Douglass, Cleopatra VII, Leonardo da Vinci, Harriet Tubman, Nikola Tesla, Marie Curie, and James Baldwin.
-- The chat keeps the most recent twelve turns, limits input to 1,000 characters, and gives each figure a historically bounded system brief.
+- The chat keeps the most recent twelve messages, limits input to 1,000 characters, and gives each figure a historically bounded system brief.
 - The browser never receives the Comfy API key or workflow graph. It only receives a job ID, status, and output URLs.
 - Video generation is asynchronous. The UI polls the job until its terminal state and renders the returned `SaveVideo` output inline.
 - Follow-up questions use the final frame of the previous Comfy output as the next H3 image-to-video source, preserving the visual thread across turns. The server needs FFmpeg available; configure `FFMPEG_PATH` when it is not on `PATH`.
