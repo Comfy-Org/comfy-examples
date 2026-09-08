@@ -53,13 +53,15 @@ Cloud and prompts for the Discord and Comfy API secrets, registers `/imagine`,
 then starts the bot. No Render integration or account setup is needed by the
 repository author; each deployer signs in with their own Render account.
 
-Because this repository is private, deployers must also grant Render's GitHub
-App access to it before using the button.
+The repository's root `render.yaml` points Render at this example with
+`rootDir: discord-image-bot`, so its build and startup commands run from this
+directory. Public repositories work with the deploy button without granting
+Render access to a private repository.
 
 The Blueprint uses the bundled workflow's prompt defaults. To use a different
-workflow, replace `workflow_api.json`, then update `COMFY_PROMPT_NODE_ID` and
-`COMFY_PROMPT_INPUT` in the Render service's environment settings before
-redeploying.
+workflow, replace `workflows/workflow_api.json`, then update
+`COMFY_PROMPT_NODE_ID` and `COMFY_PROMPT_INPUT` in the Render service's
+environment settings before redeploying.
 
 ## Comfy workflow
 
@@ -100,5 +102,5 @@ COMFY_PROMPT_NODE_ID=30:6
 COMFY_PROMPT_INPUT=text
 ```
 
-To use a different workflow later, replace `workflow_api.json` with an API
-export and update `COMFY_PROMPT_NODE_ID` / `COMFY_PROMPT_INPUT`.
+To use a different workflow later, replace `workflows/workflow_api.json` with
+an API export and update `COMFY_PROMPT_NODE_ID` / `COMFY_PROMPT_INPUT`.

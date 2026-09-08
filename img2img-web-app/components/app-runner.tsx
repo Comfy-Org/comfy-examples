@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  advancePollFailure,
+  describeJobStatus,
+  isTerminalStatus,
+  pollDelay,
+} from "../lib/job-state";
 
 type Template = {
   branding: { title: string; description: string; action: string };
@@ -29,12 +35,6 @@ const fallbackTemplate: Template = {
   ],
 };
 
-const terminalStatuses = new Set(["succeeded", "failed", "canceled", "expired"]);
-
-function isTerminalStatus(status: string) {
-  return terminalStatuses.has(status);
-}
-
 export function AppRunner() {
   const [template, setTemplate] = useState<Template>(fallbackTemplate);
   const [file, setFile] = useState<File | null>(null);
@@ -42,6 +42,8 @@ export function AppRunner() {
   const [job, setJob] = useState<Job | null>(null);
   const [message, setMessage] = useState("Choose an image to begin.");
   const [error, setError] = useState(false);
+  const [pollFailureCount, setPollFailureCount] = useState(0);
+  const [pollingStopped, setPollingStopped] = useState(false);
 
   useEffect(() => {
     fetch("/api/template")
@@ -59,37 +61,53 @@ export function AppRunner() {
   }, [preview]);
 
   useEffect(() => {
-    if (!job || isTerminalStatus(job.status)) {
+    if (!job || isTerminalStatus(job.status) || pollingStopped) {
       return;
     }
 
+    const controller = new AbortController();
     const timer = window.setTimeout(async () => {
       try {
-        const response = await fetch(`/api/jobs/${job.id}`);
-        const next = await response.json() as Job;
+        const response = await fetch(`/api/jobs/${job.id}`, { signal: controller.signal });
+        const next = await response.json() as Job & { error?: { message?: string } | string };
 
         if (!response.ok) {
-          throw new Error(next.error?.message || "Unable to check the job.");
+          const apiMessage = typeof next.error === "string" ? next.error : next.error?.message;
+          throw new Error(apiMessage || "Unable to check the job.");
         }
 
         setJob(next);
-
-        if (next.status === "succeeded") {
-          setMessage("Done.");
-        } else if (next.status === "failed") {
-          setMessage(next.error?.message || "Job failed.");
-          setError(true);
-        } else {
-          setMessage("Processing…");
-        }
+        setPollFailureCount(0);
+        const status = describeJobStatus(
+          next.status,
+          typeof next.error === "object" && next.error !== null ? next.error.message : undefined,
+        );
+        setMessage(status.message);
+        setError(status.isError);
       } catch (cause) {
-        setMessage(cause instanceof Error ? cause.message : "Unable to check the job.");
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        const failure = advancePollFailure(pollFailureCount);
+        const failureMessage = cause instanceof Error ? cause.message : "Unable to check the job.";
+
+        if (failure.stopped) {
+          setPollingStopped(true);
+          setMessage(`${failureMessage} Retry the status check.`);
+        } else {
+          setPollFailureCount(failure.failureCount);
+          setMessage(`${failureMessage} Retrying…`);
+        }
         setError(true);
       }
-    }, 1400);
+    }, pollDelay(pollFailureCount));
 
-    return () => window.clearTimeout(timer);
-  }, [job]);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [job, pollFailureCount, pollingStopped]);
 
   const imageField = template.fields.find((field) => field.id === "image") ?? fallbackTemplate.fields[0];
   const result = job?.status === "succeeded" ? job.outputs[0] : null;
@@ -101,7 +119,16 @@ export function AppRunner() {
     setPreview(selected ? URL.createObjectURL(selected) : null);
     setJob(null);
     setError(false);
+    setPollFailureCount(0);
+    setPollingStopped(false);
     setMessage(selected ? "Ready to process." : "Choose an image to begin.");
+  }
+
+  function retryPolling() {
+    setPollFailureCount(0);
+    setPollingStopped(false);
+    setError(false);
+    setMessage("Checking job status…");
   }
 
   async function submit() {
@@ -110,6 +137,8 @@ export function AppRunner() {
     }
 
     setError(false);
+    setPollFailureCount(0);
+    setPollingStopped(false);
     setMessage("Uploading and submitting…");
 
     const form = new FormData();
@@ -175,10 +204,10 @@ export function AppRunner() {
           <div>
             <button
               type="button"
-              onClick={submit}
-              disabled={!file || (job !== null && !isTerminalStatus(job.status))}
+              onClick={pollingStopped ? retryPolling : submit}
+              disabled={!file || (job !== null && !isTerminalStatus(job.status) && !pollingStopped)}
             >
-              {template.branding.action} <span>→</span>
+              {pollingStopped ? "Retry status" : template.branding.action} <span>→</span>
             </button>
             <p className={`status${error ? " is-error" : ""}`}>{message}</p>
           </div>

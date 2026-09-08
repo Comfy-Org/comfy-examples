@@ -11,6 +11,8 @@ type Job = { id: string; status: string; outputs: Array<{ name: string; url: str
 
 const emptyScene: Scene = { strokes: [], images: [] };
 const terminalStatuses = new Set(["succeeded", "failed", "canceled", "expired"]);
+const pollIntervalMs = 1500;
+const maxPollRetries = 3;
 const palette = ["#171718", "#df5b53", "#dfa735", "#68a8f7", "#74b98a", "#9d7ce8"];
 const colorNames: Record<string, string> = {
   "#171718": "black",
@@ -49,6 +51,8 @@ export function SketchStudio() {
   const requestRef = useRef(0);
   const renderInFlightRef = useRef(false);
   const queuedRenderRef = useRef<"preview" | "final" | null>(null);
+  const activeJobIdRef = useRef<string | null>(null);
+  const renderRef = useRef<(kind: "preview" | "final") => Promise<void>>(async () => {});
 
   const [scene, setScene] = useState<Scene>(emptyScene);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -61,6 +65,7 @@ export function SketchStudio() {
   const [strength, setStrength] = useState(0.4);
   const [live, setLive] = useState(true);
   const [job, setJob] = useState<Job | null>(null);
+  const [pollRetries, setPollRetries] = useState(0);
   const [message, setMessage] = useState("Draw, arrange, then describe the image.");
   const [error, setError] = useState(false);
 
@@ -287,6 +292,18 @@ export function SketchStudio() {
     return new File([blob], "canvas-guide.png", { type: "image/png" });
   }
 
+  const releaseRenderSlot = useCallback(() => {
+    activeJobIdRef.current = null;
+    renderInFlightRef.current = false;
+
+    const queuedRender = queuedRenderRef.current;
+    queuedRenderRef.current = null;
+
+    if (queuedRender) {
+      queueMicrotask(() => void renderRef.current(queuedRender));
+    }
+  }, []);
+
   const render = useCallback(async (kind: "preview" | "final") => {
     if (!prompt.trim()) return;
 
@@ -323,16 +340,37 @@ export function SketchStudio() {
 
       if (request === requestRef.current) {
         setJob(next);
-        setMessage("Generating…");
+        setPollRetries(0);
+
+        if (terminalStatuses.has(next.status)) {
+          if (next.status === "succeeded") {
+            setMessage("Ready.");
+          } else if (next.status === "failed") {
+            setMessage(next.error?.message || "Generation failed.");
+            setError(true);
+          } else if (next.status === "canceled") {
+            setMessage("Generation canceled. Render again when ready.");
+            setError(true);
+          } else {
+            setMessage("Generation expired. Render again.");
+            setError(true);
+          }
+          releaseRenderSlot();
+        } else {
+          activeJobIdRef.current = next.id;
+          setMessage("Generating…");
+        }
       }
     } catch (cause) {
       if (request === requestRef.current) {
-        renderInFlightRef.current = false;
         setMessage(cause instanceof Error ? cause.message : "Unable to render canvas.");
         setError(true);
+        releaseRenderSlot();
       }
     }
-  }, [prompt, strength]);
+  }, [prompt, strength, releaseRenderSlot]);
+
+  renderRef.current = render;
 
   useEffect(() => {
     if (!live || !prompt.trim()) return;
@@ -345,7 +383,7 @@ export function SketchStudio() {
   }, [scene, aspect, prompt, strength, live, render]);
 
   useEffect(() => {
-    if (!job || terminalStatuses.has(job.status)) return;
+    if (!job || terminalStatuses.has(job.status) || activeJobIdRef.current !== job.id) return;
 
     const timer = window.setTimeout(async () => {
       try {
@@ -356,32 +394,44 @@ export function SketchStudio() {
           throw new Error(next.error?.message || "Unable to check render.");
         }
 
+        if (activeJobIdRef.current !== job.id) return;
+
         setJob(next);
+        setPollRetries(0);
 
         if (next.status === "succeeded") {
           setMessage("Ready.");
         } else if (next.status === "failed") {
           setMessage(next.error?.message || "Generation failed.");
           setError(true);
+        } else if (next.status === "canceled") {
+          setMessage("Generation canceled. Render again when ready.");
+          setError(true);
+        } else if (next.status === "expired") {
+          setMessage("Generation expired. Render again.");
+          setError(true);
         }
 
-        if (terminalStatuses.has(next.status) && renderInFlightRef.current) {
-          renderInFlightRef.current = false;
-          const queuedRender = queuedRenderRef.current;
-          queuedRenderRef.current = null;
-
-          if (queuedRender) {
-            void render(queuedRender);
-          }
+        if (terminalStatuses.has(next.status)) {
+          releaseRenderSlot();
         }
       } catch (cause) {
-        setMessage(cause instanceof Error ? cause.message : "Unable to check render.");
-        setError(true);
+        if (activeJobIdRef.current !== job.id) return;
+
+        if (pollRetries < maxPollRetries) {
+          setPollRetries((current) => current + 1);
+          setMessage(`Connection interrupted. Retrying… (${pollRetries + 1}/${maxPollRetries})`);
+          setError(false);
+        } else {
+          setMessage(cause instanceof Error ? cause.message : "Unable to check render.");
+          setError(true);
+          releaseRenderSlot();
+        }
       }
-    }, 1500);
+    }, Math.min(pollIntervalMs * 2 ** pollRetries, 6000));
 
     return () => window.clearTimeout(timer);
-  }, [job, render]);
+  }, [job, pollRetries, releaseRenderSlot]);
 
   const result = job?.status === "succeeded" ? job.outputs[0] : null;
 

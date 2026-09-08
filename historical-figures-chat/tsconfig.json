@@ -13,6 +13,7 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "isolatedModules": true,
+    "allowImportingTsExtensions": true,
     "incremental": true,
     "plugins": [
       {
@@ -30,6 +31,7 @@
     "components/**/*.ts",
     "components/**/*.tsx",
     "lib/**/*.ts",
+    "test/**/*.ts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

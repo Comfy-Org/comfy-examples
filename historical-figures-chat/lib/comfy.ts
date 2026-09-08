@@ -1,10 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { Comfy, type Job } from "@comfyorg/sdk";
+import { Comfy, type Job, type Output as ComfyOutput } from "@comfyorg/sdk";
 import { type Figure } from "./figures";
 import { extractLastFrame } from "./last-frame";
 
-type Message = { role: "user" | "assistant"; content: string };
+type Message = { role: "user"; content: string };
 type Output = { id: string; name: string; type: string; url: string };
 
 const workflowPath = join(process.cwd(), "workflows", "workflow_api.json");
@@ -29,9 +29,19 @@ async function portraitAsset(comfy: Comfy, figure: Figure) {
   return comfy.assets.fromBytes(bytes, { filename: `${figure.id}.jpg`, contentType: "image/jpeg" });
 }
 
-async function sourceAsset(comfy: Comfy, figure: Figure, previousVideoUrl?: string) {
-  if (!previousVideoUrl) return portraitAsset(comfy, figure);
-  const bytes = await extractLastFrame(previousVideoUrl);
+function continuationOutput(job: Job): ComfyOutput {
+  if (job.status !== "succeeded") throw new Error("The previous video job has not succeeded.");
+  const output = job.getOutputs("92").find((candidate) => candidate.type.toLowerCase().includes("video"));
+  if (!output || !output.contentType.toLowerCase().startsWith("video/")) {
+    throw new Error("The previous job does not contain the expected video output.");
+  }
+  return output;
+}
+
+async function sourceAsset(comfy: Comfy, figure: Figure, previousJobId?: string) {
+  if (!previousJobId) return portraitAsset(comfy, figure);
+  const previousJob = await comfy.jobs.get(previousJobId);
+  const bytes = await extractLastFrame(continuationOutput(previousJob));
   return comfy.assets.fromBytes(bytes, { filename: `${figure.id}-continuation.png`, contentType: "image/png" });
 }
 
@@ -43,19 +53,19 @@ async function serializeOutputs(job: Job): Promise<Output[]> {
 }
 
 function dialogueRequest(figure: Figure, messages: Message[]) {
-  const transcript = messages.map((message) => `${message.role === "user" ? "Visitor" : figure.name}: ${message.content}`).join("\n");
+  const transcript = messages.map((message) => `Visitor: ${message.content}`).join("\n");
   return [
     `Write ${figure.name}'s direct answer to the latest visitor question in 8 to 12 English words.`,
     "Return only the words that will be spoken: no quotation marks, speaker names, stage direction, markdown, or music instructions.",
-    "Conversation:",
+    "Visitor question history (the prior generated replies are video-only and are not transcribed):",
     transcript,
   ].join("\n\n");
 }
 
-export async function submitConversation(figure: Figure, messages: Message[], previousVideoUrl?: string) {
+export async function submitConversation(figure: Figure, messages: Message[], previousJobId?: string) {
   const comfy = client();
   const workflow = await comfy.workflows.fromFile(workflowPath);
-  const asset = await sourceAsset(comfy, figure, previousVideoUrl);
+  const asset = await sourceAsset(comfy, figure, previousJobId);
 
   // These bindings map to the validated API export in workflows/workflow_api.json.
   workflow.setInput("114", "image", asset);
