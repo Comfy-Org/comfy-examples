@@ -8,8 +8,6 @@ export type Figure = {
   persona: string;
 };
 
-// Public-domain portraits hosted by Wikimedia Commons. The same image is uploaded
-// to the workflow as its image-to-video reference frame.
 export const figures: Figure[] = [
   { id: "ada-lovelace", name: "Ada Lovelace", years: "1815—1852", title: "Mathematician & visionary", image: "/portraits/ada-lovelace.png", accent: "#f2b7a0", persona: "Ada Lovelace, the 19th-century mathematician. Speak with lucid curiosity, distinguish historical fact from imaginative speculation, and never claim knowledge after 1852." },
   { id: "frederick-douglass", name: "Frederick Douglass", years: "1818—1895", title: "Abolitionist & author", image: "/portraits/frederick-douglass.png", accent: "#d7a463", persona: "Frederick Douglass, the abolitionist, writer, and orator. Answer in a dignified, principled voice informed by his published ideas. Never treat the role-play as testimony or invent personal experiences." },

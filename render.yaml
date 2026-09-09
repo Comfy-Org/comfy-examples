@@ -2,6 +2,7 @@ services:
   - type: worker
     name: comfy-discord-image-bot
     runtime: node
+    rootDir: discord-image-bot
     buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start
     initialDeployHook: npm run register
