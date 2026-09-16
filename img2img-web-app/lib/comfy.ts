@@ -5,12 +5,7 @@ import { appTemplate } from "./app-template";
 type Output = { id: string; name: string; type: string; url: string };
 
 function client() {
-  const baseUrl = process.env.COMFY_BASE_URL?.trim();
   const apiKey = process.env.COMFY_API_KEY?.trim();
-
-  if (!baseUrl) {
-    throw new Error("COMFY_BASE_URL is not configured.");
-  }
 
   if (!apiKey) {
     throw new Error("COMFY_API_KEY is not configured.");

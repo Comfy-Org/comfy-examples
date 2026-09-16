@@ -1,8 +1,11 @@
 # Img2img web app
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fimg2img-web-app&env=COMFY_BASE_URL%2CCOMFY_API_KEY&envDefaults=%7B%22COMFY_BASE_URL%22%3A%22https%3A%2F%2Fcloud.comfy.org%22%7D&envDescription=Comfy%20Cloud%20is%20pre-filled.%20Replace%20it%20with%20your%20Comfy%20Serverless%20deployment%20URL%20if%20needed%2C%20then%20enter%20your%20Comfy%20API%20key.)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fimg2img-web-app&env=COMFY_API_KEY&envDescription=Enter+your+Comfy+API+key.)
 
 Upload an image and receive a 4× upscaled result.
+
+Requires Node.js 22.6+ and a
+[Comfy API key](https://platform.comfy.org/profile/api-keys).
 
 ## Run locally
 
@@ -12,15 +15,11 @@ npm install
 npm run dev
 ```
 
-Add your Comfy endpoint and API key to `.env.local`:
+Add your API key to `.env.local`:
 
 ```bash
-COMFY_BASE_URL=https://your-deployment.run.comfy.app
 COMFY_API_KEY=comfyui-...
 ```
-
-Use `https://cloud.comfy.org` for Comfy Cloud. To target another compatible
-deployment, set its URL as `COMFY_BASE_URL`.
 
 ## Replace the workflow
 
@@ -35,3 +34,20 @@ image: { nodeId: "1", input: "image" }
 
 Use the node ID and input name from your export, and keep a terminal output node
 such as `SaveImage`, `SaveVideo`, or `SaveAudio`.
+
+## Run on Developer Platform
+
+Use a Developer Platform deployment when the replacement workflow needs custom
+nodes or models. First install and test those dependencies in local ComfyUI,
+then run from that ComfyUI directory:
+
+```bash
+comfy cloud login
+comfy build init --name img2img-web-app
+comfy build push --release --target linux/nvidia
+comfy deploy up --watch
+comfy deploy ls
+```
+
+Set `COMFY_BASE_URL` to the deployment's `https://dep-...run.comfy.app`
+endpoint. Keep the same `COMFY_API_KEY`.

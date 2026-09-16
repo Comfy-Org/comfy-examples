@@ -4,6 +4,10 @@
 
 A Discord `/imagine` bot backed by a Comfy text-to-image workflow.
 
+Requires Node.js 22+, a
+[Comfy API key](https://platform.comfy.org/profile/api-keys), and a Discord
+application.
+
 ## Create a Discord app
 
 1. Open the [Discord Developer Portal](https://discord.com/developers/applications)
@@ -61,3 +65,20 @@ COMFY_PROMPT_INPUT=text
 
 To use another workflow, replace `workflows/workflow_api.json` with an API
 export and update `COMFY_PROMPT_NODE_ID` and `COMFY_PROMPT_INPUT`.
+
+## Run on Developer Platform
+
+Use a Developer Platform deployment when the replacement workflow needs custom
+nodes or models. First install and test those dependencies in local ComfyUI,
+then run from that ComfyUI directory:
+
+```bash
+comfy cloud login
+comfy build init --name discord-image-bot
+comfy build push --release --target linux/nvidia
+comfy deploy up --watch
+comfy deploy ls
+```
+
+Set `COMFY_BASE_URL` in Render or `.env.local` to the deployment's
+`https://dep-...run.comfy.app` endpoint. Keep the same `COMFY_API_KEY`.

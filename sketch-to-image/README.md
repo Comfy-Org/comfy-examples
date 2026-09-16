@@ -1,8 +1,11 @@
 # Canvas to Image
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fsketch-to-image&env=COMFY_BASE_URL%2CCOMFY_API_KEY&envDescription=Enter+the+Comfy+Serverless+endpoint+and+your+Comfy+API+key.)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fsketch-to-image&env=COMFY_API_KEY&envDescription=Enter+your+Comfy+API+key.)
 
 Draw or import a guide, describe the result, and generate an image.
+
+Requires Node.js 22+ and a
+[Comfy API key](https://platform.comfy.org/profile/api-keys).
 
 ## Run locally
 
@@ -26,3 +29,20 @@ structure   → ControlNetApplyAdvanced (86:129.strength)
 
 To swap the workflow, replace `workflows/workflow_api.json` and update its
 bindings in [lib/comfy.ts](lib/comfy.ts).
+
+## Run on Developer Platform
+
+Use a Developer Platform deployment when the replacement workflow needs custom
+nodes or models. First install and test those dependencies in local ComfyUI,
+then run from that ComfyUI directory:
+
+```bash
+comfy cloud login
+comfy build init --name sketch-to-image
+comfy build push --release --target linux/nvidia
+comfy deploy up --watch
+comfy deploy ls
+```
+
+Set `COMFY_BASE_URL` to the deployment's `https://dep-...run.comfy.app`
+endpoint. Keep the same `COMFY_API_KEY`.
