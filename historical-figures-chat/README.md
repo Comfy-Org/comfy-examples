@@ -8,9 +8,8 @@ rendered by the bundled Comfy Cloud workflow.
 ## Deploy
 
 Click **Deploy with Vercel** and enter a `COMFY_API_KEY` from
-[Comfy API Keys](https://platform.comfy.org/profile/api-keys). The app uses
-Comfy Cloud by default, and its workflow is already included in this folder.
-No additional workflow or infrastructure setup is required.
+[Comfy API Keys](https://platform.comfy.org/profile/api-keys). That is the only
+Comfy setup required.
 
 The deployed app is public and generations consume the key owner's Comfy
 credits. Keep it limited to a trusted audience unless you add access controls.
@@ -29,7 +28,4 @@ Add the API key to `.env.local`:
 COMFY_API_KEY=comfyui-...
 ```
 
-The API key stays on the server. The browser sends questions to the app, and
-the app submits the included workflow to Comfy Cloud and returns its video
-output. Follow-up questions include the visitor's earlier questions and reuse
-the selected portrait.
+The API key stays on the server.

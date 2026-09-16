@@ -2,15 +2,7 @@
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples)
 
-A minimal Discord `/imagine` bot backed by a replaceable Comfy text-to-image
-workflow.
-
-```text
-/imagine prompt
-→ Discord bot
-→ Comfy SDK submits workflow_api.json
-→ bot replies with the generated image URL
-```
+A Discord `/imagine` bot backed by a Comfy text-to-image workflow.
 
 ## Create a Discord app
 
@@ -39,54 +31,19 @@ npm run register
 npm run dev
 ```
 
-Add the Application ID and bot token from the previous section to `.env.local`.
-For development, set `DISCORD_GUILD_ID` to your test server's ID; this registers
-`/imagine` in that server immediately. Omit it to register the command globally.
+Set `DISCORD_APPLICATION_ID`, `DISCORD_TOKEN`, and `COMFY_API_KEY` in
+`.env.local`. For development, set `DISCORD_GUILD_ID` to your test server's ID;
+omit it to register `/imagine` globally.
 
 When the bot prints `Ready as …`, run `/imagine` in the server where you
 installed it.
 
 ## Deploy to Render
 
-The button above creates a Render **Background Worker**. It defaults to Comfy
-Cloud and prompts for the Discord and Comfy API secrets, registers `/imagine`,
-then starts the bot. No Render integration or account setup is needed by the
-repository author; each deployer signs in with their own Render account.
+The button creates a Render **Background Worker** and prompts for the Discord
+and Comfy credentials.
 
-The repository's root `render.yaml` points Render at this example with
-`rootDir: discord-image-bot`, so its build and startup commands run from this
-directory. Public repositories work with the deploy button without granting
-Render access to a private repository.
-
-The Blueprint uses the bundled workflow's prompt defaults. To use a different
-workflow, replace `workflows/workflow_api.json`, then update
-`COMFY_PROMPT_NODE_ID` and `COMFY_PROMPT_INPUT` in the Render service's
-environment settings before redeploying.
-
-## Comfy workflow
-
-The bundled `workflows/workflow_api.json` is an API-format text-to-image
-example. `COMFY_BASE_URL` defaults to Comfy Cloud. Replace it with a
-Developer Platform Serverless URL when your workflow needs a custom deployment.
-
-### Use custom nodes or models
-
-Create the serverless runtime from a local, tested ComfyUI environment:
-
-```bash
-comfy cloud login
-comfy build init --name discord-image-bot
-comfy build push --release --target linux/nvidia
-comfy deploy up --watch
-```
-
-`build init` scans locally. `build push --release` uploads the build and cuts a
-Linux/NVIDIA release. `deploy up --watch` creates the deployment and waits for
-it to become ready. Use `comfy deploy ls` or open
-[Developer Platform Deployments](https://platform.comfy.org/profile/deployments),
-then set Render's `COMFY_BASE_URL` to its `https://dep-...run.comfy.app` URL.
-Custom nodes only need to be present in the scanned environment; they do not
-need to be publicly published.
+## Workflow
 
 ```text
 User prompt input: 30:19.value
@@ -102,5 +59,5 @@ COMFY_PROMPT_NODE_ID=30:6
 COMFY_PROMPT_INPUT=text
 ```
 
-To use a different workflow later, replace `workflows/workflow_api.json` with
-an API export and update `COMFY_PROMPT_NODE_ID` / `COMFY_PROMPT_INPUT`.
+To use another workflow, replace `workflows/workflow_api.json` with an API
+export and update `COMFY_PROMPT_NODE_ID` and `COMFY_PROMPT_INPUT`.
