@@ -5,7 +5,7 @@ import { figures, type Figure } from "../lib/figures";
 
 type Message =
   | { id: string; role: "user"; content: string }
-  | { id: string; role: "assistant"; video: string; jobId: string };
+  | { id: string; role: "assistant"; video: string };
 type Job = { id: string; status: string; outputs: Array<{ url: string; type: string }>; error: { message?: string } | null };
 const terminal = new Set(["succeeded", "failed", "canceled", "expired"]);
 const MAX_MESSAGES = 12;
@@ -36,7 +36,7 @@ export function HistoricalChat() {
         setNotice("The response finished without a video output.");
         return;
       }
-      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant" as const, video, jobId: next.id }].slice(-MAX_MESSAGES));
+      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant" as const, video }].slice(-MAX_MESSAGES));
       setNotice("Video response ready.");
       return;
     }
@@ -83,11 +83,6 @@ export function HistoricalChat() {
     () => [...messages].reverse().find((message) => message.role === "assistant")?.video,
     [messages],
   );
-  const latestJobId = useMemo(
-    () => [...messages].reverse().find((message) => message.role === "assistant")?.jobId,
-    [messages],
-  );
-
   function invalidateRequests() {
     requestGenerationRef.current += 1;
     pollControllerRef.current?.abort();
@@ -137,7 +132,6 @@ export function HistoricalChat() {
           messages: nextMessages
             .filter((message): message is Extract<Message, { role: "user" }> => message.role === "user")
             .map(({ role, content }) => ({ role, content })),
-          previousJobId: latestJobId,
         }),
       });
       const next = await response.json() as Job & { error?: string };

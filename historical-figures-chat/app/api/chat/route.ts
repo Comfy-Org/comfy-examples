@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { submitConversation } from "../../../lib/comfy";
 import { findFigure } from "../../../lib/figures";
-import { isComfyJobId } from "../../../lib/job-id";
 
 export const runtime = "nodejs";
 
@@ -17,7 +16,7 @@ function validateMessages(value: unknown): asserts value is Message[] {
 }
 
 export async function POST(request: Request) {
-  let body: { figureId?: unknown; messages?: unknown; previousJobId?: unknown };
+  let body: { figureId?: unknown; messages?: unknown };
   try {
     body = await request.json() as typeof body;
   } catch {
@@ -30,15 +29,12 @@ export async function POST(request: Request) {
     figure = findFigure(body.figureId);
     if (!figure) throw new Error("That historical figure is unavailable.");
     validateMessages(body.messages);
-    if (body.previousJobId !== undefined && !isComfyJobId(body.previousJobId)) {
-      throw new Error("The previous job ID is invalid.");
-    }
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 400 });
   }
 
   try {
-    const job = await submitConversation(figure, body.messages, body.previousJobId);
+    const job = await submitConversation(figure, body.messages);
     return NextResponse.json(job, { status: 202 });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 502 });

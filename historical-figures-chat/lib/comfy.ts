@@ -1,8 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { Comfy, type Job, type Output as ComfyOutput } from "@comfyorg/sdk";
+import { Comfy, type Job } from "@comfyorg/sdk";
 import { type Figure } from "./figures";
-import { extractLastFrame } from "./last-frame";
 
 type Message = { role: "user"; content: string };
 type Output = { id: string; name: string; type: string; url: string };
@@ -12,7 +11,6 @@ const workflowPath = join(process.cwd(), "workflows", "workflow_api.json");
 function client() {
   const apiKey = process.env.COMFY_API_KEY?.trim();
   if (!apiKey) throw new Error("COMFY_API_KEY is not configured.");
-  if (!process.env.COMFY_BASE_URL?.trim()) throw new Error("COMFY_BASE_URL is not configured.");
   return new Comfy({ apiKey, clientInfo: "historical-figures-chat" });
 }
 
@@ -27,22 +25,6 @@ async function portraitAsset(comfy: Comfy, figure: Figure) {
   }
   const bytes = new Uint8Array(await response.arrayBuffer());
   return comfy.assets.fromBytes(bytes, { filename: `${figure.id}.jpg`, contentType: "image/jpeg" });
-}
-
-function continuationOutput(job: Job): ComfyOutput {
-  if (job.status !== "succeeded") throw new Error("The previous video job has not succeeded.");
-  const output = job.getOutputs("92").find((candidate) => candidate.type.toLowerCase().includes("video"));
-  if (!output || !output.contentType.toLowerCase().startsWith("video/")) {
-    throw new Error("The previous job does not contain the expected video output.");
-  }
-  return output;
-}
-
-async function sourceAsset(comfy: Comfy, figure: Figure, previousJobId?: string) {
-  if (!previousJobId) return portraitAsset(comfy, figure);
-  const previousJob = await comfy.jobs.get(previousJobId);
-  const bytes = await extractLastFrame(continuationOutput(previousJob));
-  return comfy.assets.fromBytes(bytes, { filename: `${figure.id}-continuation.png`, contentType: "image/png" });
 }
 
 async function serializeOutputs(job: Job): Promise<Output[]> {
@@ -62,10 +44,10 @@ function dialogueRequest(figure: Figure, messages: Message[]) {
   ].join("\n\n");
 }
 
-export async function submitConversation(figure: Figure, messages: Message[], previousJobId?: string) {
+export async function submitConversation(figure: Figure, messages: Message[]) {
   const comfy = client();
   const workflow = await comfy.workflows.fromFile(workflowPath);
-  const asset = await sourceAsset(comfy, figure, previousJobId);
+  const asset = await portraitAsset(comfy, figure);
 
   // These bindings map to the validated API export in workflows/workflow_api.json.
   workflow.setInput("114", "image", asset);
