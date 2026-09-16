@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   advancePollFailure,
   describeJobStatus,
@@ -44,6 +44,9 @@ export function AppRunner() {
   const [error, setError] = useState(false);
   const [pollFailureCount, setPollFailureCount] = useState(0);
   const [pollingStopped, setPollingStopped] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const submissionRef = useRef(0);
+  const submissionControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     fetch("/api/template")
@@ -114,6 +117,8 @@ export function AppRunner() {
 
   function selectImage(event: React.ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files?.[0] ?? null;
+    submissionRef.current += 1;
+    submissionControllerRef.current?.abort();
 
     setFile(selected);
     setPreview(selected ? URL.createObjectURL(selected) : null);
@@ -121,6 +126,7 @@ export function AppRunner() {
     setError(false);
     setPollFailureCount(0);
     setPollingStopped(false);
+    setSubmitting(false);
     setMessage(selected ? "Ready to process." : "Choose an image to begin.");
   }
 
@@ -132,31 +138,42 @@ export function AppRunner() {
   }
 
   async function submit() {
-    if (!file) {
+    if (!file || submitting) {
       return;
     }
+
+    const submission = ++submissionRef.current;
+    const controller = new AbortController();
+    submissionControllerRef.current = controller;
 
     setError(false);
     setPollFailureCount(0);
     setPollingStopped(false);
+    setSubmitting(true);
     setMessage("Uploading and submitting…");
 
     const form = new FormData();
     form.append("image", file);
 
     try {
-      const response = await fetch("/api/jobs", { method: "POST", body: form });
+      const response = await fetch("/api/jobs", { method: "POST", body: form, signal: controller.signal });
       const next = await response.json() as Job & { error?: string };
 
       if (!response.ok) {
         throw new Error(typeof next.error === "string" ? next.error : "Unable to submit the job.");
       }
 
+      if (submission !== submissionRef.current) return;
       setJob(next);
       setMessage("Processing…");
     } catch (cause) {
+      if (controller.signal.aborted || submission !== submissionRef.current) return;
       setMessage(cause instanceof Error ? cause.message : "Unable to submit the job.");
       setError(true);
+    } finally {
+      if (submission === submissionRef.current) {
+        setSubmitting(false);
+      }
     }
   }
 
@@ -205,9 +222,9 @@ export function AppRunner() {
             <button
               type="button"
               onClick={pollingStopped ? retryPolling : submit}
-              disabled={!file || (job !== null && !isTerminalStatus(job.status) && !pollingStopped)}
+              disabled={!file || submitting || (job !== null && !isTerminalStatus(job.status) && !pollingStopped)}
             >
-              {pollingStopped ? "Retry status" : template.branding.action} <span>→</span>
+              {submitting ? "Submitting…" : pollingStopped ? "Retry status" : template.branding.action} <span>→</span>
             </button>
             <p className={`status${error ? " is-error" : ""}`}>{message}</p>
           </div>

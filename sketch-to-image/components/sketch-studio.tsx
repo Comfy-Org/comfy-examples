@@ -53,6 +53,9 @@ export function SketchStudio() {
   const queuedRenderRef = useRef<"preview" | "final" | null>(null);
   const activeJobIdRef = useRef<string | null>(null);
   const renderRef = useRef<(kind: "preview" | "final") => Promise<void>>(async () => {});
+  const drawSceneRef = useRef<() => void>(() => {});
+  const sizeRef = useRef<(typeof dimensions)[Aspect]>(dimensions.square);
+  const selectedIdRef = useRef<string | null>(null);
 
   const [scene, setScene] = useState<Scene>(emptyScene);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -70,6 +73,8 @@ export function SketchStudio() {
   const [error, setError] = useState(false);
 
   const size = dimensions[aspect];
+  sizeRef.current = size;
+  selectedIdRef.current = selectedId;
 
   const setLiveScene = useCallback((next: Scene) => {
     sceneRef.current = next;
@@ -88,16 +93,18 @@ export function SketchStudio() {
   const paintScene = useCallback((canvas: HTMLCanvasElement, includeSelection: boolean) => {
     const context = canvas.getContext("2d");
     if (!context) return;
+    const currentSize = sizeRef.current;
+    const currentScene = sceneRef.current;
 
-    canvas.width = size.width;
-    canvas.height = size.height;
+    canvas.width = currentSize.width;
+    canvas.height = currentSize.height;
 
-    for (const item of scene.images) {
+    for (const item of currentScene.images) {
       let image = imageCache.current.get(item.src);
 
       if (!image) {
         image = new Image();
-        image.onload = drawScene;
+        image.onload = () => drawSceneRef.current();
         image.src = item.src;
         imageCache.current.set(item.src, image);
       }
@@ -110,7 +117,7 @@ export function SketchStudio() {
     context.lineCap = "round";
     context.lineJoin = "round";
 
-    for (const stroke of scene.strokes) {
+    for (const stroke of currentScene.strokes) {
       if (stroke.points.length < 2) continue;
       context.globalCompositeOperation = stroke.erase ? "destination-out" : "source-over";
       context.strokeStyle = stroke.color;
@@ -123,7 +130,7 @@ export function SketchStudio() {
 
     context.globalCompositeOperation = "source-over";
 
-    const selected = includeSelection && scene.images.find((item) => item.id === selectedId);
+    const selected = includeSelection && currentScene.images.find((item) => item.id === selectedIdRef.current);
     if (selected) {
       context.strokeStyle = "#7366ff";
       context.lineWidth = 3;
@@ -131,12 +138,13 @@ export function SketchStudio() {
       context.fillStyle = "#7366ff";
       context.fillRect(selected.x + selected.width - 10, selected.y + selected.height - 10, 20, 20);
     }
-  }, [scene, selectedId, size]);
+  }, []);
 
   const drawScene = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) paintScene(canvas, true);
   }, [paintScene]);
+  drawSceneRef.current = drawScene;
 
   useEffect(() => {
     drawScene();
@@ -278,7 +286,7 @@ export function SketchStudio() {
     commitScene(emptyScene);
   }
 
-  async function canvasFile() {
+  const canvasFile = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) throw new Error("Canvas is not ready.");
 
@@ -290,7 +298,7 @@ export function SketchStudio() {
     });
 
     return new File([blob], "canvas-guide.png", { type: "image/png" });
-  }
+  }, [paintScene]);
 
   const releaseRenderSlot = useCallback(() => {
     activeJobIdRef.current = null;
@@ -368,7 +376,7 @@ export function SketchStudio() {
         releaseRenderSlot();
       }
     }
-  }, [prompt, strength, releaseRenderSlot]);
+  }, [canvasFile, prompt, strength, releaseRenderSlot]);
 
   renderRef.current = render;
 
