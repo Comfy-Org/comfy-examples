@@ -1,0 +1,13 @@
+pipeline:
+  - fragment: room-remix-edit
+    alias: makeover
+    inputs:
+      nano_banana_2_model_images_image_1: $asset.sunny-living-room.jpg
+    params:
+      nano_banana_2_model: Nano Banana 2 (Gemini 3.1 Flash Image)
+      nano_banana_2_model_aspect_ratio: auto
+      nano_banana_2_model_resolution: 1K
+      nano_banana_2_model_thinking_level: MINIMAL
+      nano_banana_2_response_modalities: IMAGE
+      nano_banana_2_prompt: >-
+        Redesign this exact room as a photorealistic, welcoming interior in a warm Japandi style. Keep the room architecture, windows, floor, camera angle, perspective, and natural lighting recognizable. Replace the furniture with a low cream linen sofa, a sculptural oak side table, a soft terracotta rug, leafy indoor plants, and warm paper lantern lighting. Use natural oak, linen, handmade ceramics, soft sage green, and warm cream. Make the result feel lived-in, comfortable, and thoughtfully designed, like an editorial photograph of a real home.

@@ -1,53 +1,31 @@
-# Img2img web app
+# Image upscaler
+
+Upload a PNG, JPEG, or WebP image and make a 4× larger copy with Comfy's image scaling workflow.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fimg2img-web-app&env=COMFY_API_KEY&envDescription=Enter+your+Comfy+API+key.)
 
-Upload an image and receive a 4× upscaled result.
-
-Requires Node.js 22.6+ and a
-[Comfy API key](https://platform.comfy.org/profile/api-keys).
-
 ## Run locally
+
+Requires Node.js 22.6 or newer and a Comfy API key.
 
 ```bash
 cp .env.example .env.local
-npm install
+# Set COMFY_API_KEY in .env.local
+npm ci
 npm run dev
 ```
 
-Add your API key to `.env.local`:
+Open the local URL printed by Next.js. `.env.example` also documents the optional `COMFY_BASE_URL` override for a Comfy deployment or compatible proxy; otherwise the SDK uses Comfy Cloud.
 
-```bash
-COMFY_API_KEY=comfyui-...
-```
+## Try it
 
-## Replace the workflow
+Choose an image under 10 MB, select **Upscale image**, and wait for the result to appear. Use **Download result** to save it.
 
-1. Build and test a workflow in ComfyUI.
-2. Export it with **File → Export Workflow (API)**.
-3. Replace [workflows/workflow_api.json](workflows/workflow_api.json).
-4. Update the input binding in [lib/app-template.ts](lib/app-template.ts):
+## Code tour
 
-```ts
-image: { nodeId: "1", input: "image" }
-```
+- [components/app-runner.tsx](components/app-runner.tsx) uploads the selected file to `POST /api/jobs` and polls `GET /api/jobs/[id]`.
+- [app/api/jobs/route.ts](app/api/jobs/route.ts) validates the upload; [app/api/jobs/[id]/route.ts](app/api/jobs/%5Bid%5D/route.ts) returns job status.
+- [lib/app-template.ts](lib/app-template.ts) binds the upload to node `1.image`; [lib/comfy.ts](lib/comfy.ts) loads the workflow, uploads the file as an SDK asset, submits the job, and serializes outputs.
+- [workflows/workflow_api.json](workflows/workflow_api.json) scales node 1 through `ImageScaleBy` node 2 at `scale_by: 4`, then saves with `SaveImage` node 6.
 
-Use the node ID and input name from your export, and keep a terminal output node
-such as `SaveImage`, `SaveVideo`, or `SaveAudio`.
-
-## Run on Developer Platform
-
-Use a Developer Platform deployment when the replacement workflow needs custom
-nodes or models. First install and test those dependencies in local ComfyUI,
-then run from that ComfyUI directory:
-
-```bash
-comfy cloud login
-comfy build init --name img2img-web-app
-comfy build push --release --target linux/nvidia
-comfy deploy up --watch
-comfy deploy ls
-```
-
-Set `COMFY_BASE_URL` to the deployment's `https://dep-...run.comfy.app`
-endpoint. Keep the same `COMFY_API_KEY`.
+`COMFY_API_KEY` stays on the server. Each submitted upscale uses credits from the configured Comfy account.

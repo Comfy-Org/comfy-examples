@@ -1,0 +1,7 @@
+pipeline:
+  - fragment: radio-track
+    alias: broadcast
+    params:
+      float_duration_value: 30
+      save_audio_advanced_filename_prefix: audio/comfy-radio
+output_prefix: outputs/comfy-radio

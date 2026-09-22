@@ -21,9 +21,10 @@ export function discordConfig() {
 }
 
 export function comfyConfig() {
+  // The bundled PrimitiveStringMultiline prompt node's input is named `value`.
   return {
     apiKey: required("COMFY_API_KEY"),
     promptNodeId: required("COMFY_PROMPT_NODE_ID"),
-    promptInput: process.env.COMFY_PROMPT_INPUT || "text",
+    promptInput: process.env.COMFY_PROMPT_INPUT || "value",
   };
 }

@@ -1,0 +1,432 @@
+{
+  "151": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "124": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092201,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "151",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "202": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "124",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/01"
+    }
+  },
+  "304": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "277": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092202,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "304",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "355": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "277",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/02"
+    }
+  },
+  "457": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "430": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092203,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "457",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "508": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "430",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/03"
+    }
+  },
+  "610": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "583": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092204,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "610",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "661": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "583",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/04"
+    }
+  },
+  "763": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "736": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092205,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "763",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "814": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "736",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/05"
+    }
+  },
+  "916": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "889": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092206,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "916",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "967": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "889",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/06"
+    }
+  },
+  "1069": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "1042": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092207,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "1069",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "1120": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "1042",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/07"
+    }
+  },
+  "1222": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "1195": {
+    "inputs": {
+      "prompt": "A square profile portrait in the selected style, preserving the exact person and facial identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092208,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "1222",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "1273": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "1195",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture/08"
+    }
+  },
+  "_meta": {
+    "schema": "compose/1",
+    "blueprint": "/Users/stale2000/comfy/comfy-examples/profile-picture-generator/blueprints/profile-picture-bundle.yaml",
+    "items": {
+      "01": {
+        "nodes": [
+          "124",
+          "151",
+          "202"
+        ],
+        "save_node": "202",
+        "prefix": "outputs/profile-picture/01"
+      },
+      "02": {
+        "nodes": [
+          "277",
+          "304",
+          "355"
+        ],
+        "save_node": "355",
+        "prefix": "outputs/profile-picture/02"
+      },
+      "03": {
+        "nodes": [
+          "430",
+          "457",
+          "508"
+        ],
+        "save_node": "508",
+        "prefix": "outputs/profile-picture/03"
+      },
+      "04": {
+        "nodes": [
+          "583",
+          "610",
+          "661"
+        ],
+        "save_node": "661",
+        "prefix": "outputs/profile-picture/04"
+      },
+      "05": {
+        "nodes": [
+          "736",
+          "763",
+          "814"
+        ],
+        "save_node": "814",
+        "prefix": "outputs/profile-picture/05"
+      },
+      "06": {
+        "nodes": [
+          "889",
+          "916",
+          "967"
+        ],
+        "save_node": "967",
+        "prefix": "outputs/profile-picture/06"
+      },
+      "07": {
+        "nodes": [
+          "1042",
+          "1069",
+          "1120"
+        ],
+        "save_node": "1120",
+        "prefix": "outputs/profile-picture/07"
+      },
+      "08": {
+        "nodes": [
+          "1195",
+          "1222",
+          "1273"
+        ],
+        "save_node": "1273",
+        "prefix": "outputs/profile-picture/08"
+      }
+    }
+  }
+}

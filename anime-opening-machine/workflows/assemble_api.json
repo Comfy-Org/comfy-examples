@@ -1,0 +1,8 @@
+{
+  "1": { "class_type": "LoadVideo", "inputs": { "file": "clip-1.mp4" } },
+  "2": { "class_type": "LoadVideo", "inputs": { "file": "clip-2.mp4" } },
+  "3": { "class_type": "LoadVideo", "inputs": { "file": "clip-3.mp4" } },
+  "4": { "class_type": "LoadVideo", "inputs": { "file": "clip-4.mp4" } },
+  "5": { "class_type": "ConcatenateVideo", "inputs": { "videos.video0": ["1", 0], "videos.video1": ["2", 0], "videos.video2": ["3", 0], "videos.video3": ["4", 0], "codec": "h264" } },
+  "6": { "class_type": "SaveVideo", "inputs": { "video": ["5", 0], "filename_prefix": "AnimeOpening/Loop", "format": "mp4", "format.codec": "h264", "format.codec.encoding": "auto" } }
+}

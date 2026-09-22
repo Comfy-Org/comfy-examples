@@ -1,0 +1,25 @@
+{
+  "name": "comfy-profile-picture-generator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "test": "node --test --experimental-strip-types test/*.test.ts && tsc --noEmit",
+    "build:workflows": "comfy workflow compose blueprints/profile-picture-single.yaml && comfy workflow compose blueprints/profile-picture-bundle.yaml"
+  },
+  "engines": { "node": ">=22.6.0" },
+  "dependencies": {
+    "@comfyorg/sdk": "^0.1.8",
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "typescript": "^7.0.2"
+  }
+}

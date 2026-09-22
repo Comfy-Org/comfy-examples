@@ -1,0 +1,50 @@
+{
+  "151": {
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "load d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    },
+    "inputs": {
+      "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
+    }
+  },
+  "124": {
+    "inputs": {
+      "prompt": "A square profile portrait preserving the person's face and identity from the reference.",
+      "model": "Nano Banana 2 Lite",
+      "seed": 2026092201,
+      "response_modalities": "IMAGE",
+      "system_prompt": "Create one polished profile picture based on the reference image and prompt.",
+      "temperature": 0.8,
+      "top_p": 0.9,
+      "model.aspect_ratio": "1:1",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "151",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  },
+  "202": {
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "save composed final (image)"
+    },
+    "inputs": {
+      "images": [
+        "124",
+        0
+      ],
+      "filename_prefix": "outputs/profile-picture"
+    }
+  },
+  "_meta": {
+    "schema": "compose/1",
+    "blueprint": "/Users/stale2000/comfy/comfy-examples/profile-picture-generator/blueprints/profile-picture-single.yaml"
+  }
+}

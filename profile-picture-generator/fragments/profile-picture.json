@@ -1,0 +1,95 @@
+{
+  "_fragment": {
+    "name": "profile-picture",
+    "description": "Decomposed from workflows/reference.json. Edit values as named params in a blueprint and rebuild with `comfy workflow compose` \u2014 do not hand-edit the compiled workflow.",
+    "terminal": false,
+    "source": "workflows/reference.json",
+    "inputs": {
+      "nano_banana_2_model_images_image_1": {
+        "type": "IMAGE",
+        "binds": "24.model.images.image_1"
+      }
+    },
+    "outputs": {
+      "image": {
+        "type": "IMAGE",
+        "from": "24",
+        "port": 0
+      }
+    },
+    "params": {
+      "nano_banana_2_prompt": {
+        "type": "STRING",
+        "binds": "24.prompt",
+        "default": "Edit the image: change the man's white tank top and light pink corduroy pants to an unbuttoned cream-colored linen button-down shirt and white linen shorts; change his hairstyle to wavy medium-length hair; add round tortoiseshell sunglasses on his nose; change the dog's plain collar to a blue and white striped sailor collar and add a small straw sun hat on the dog; change the background to a sunny beach with warm golden sand and the ocean in the distance; keep the man's kneeling pose, the dog's sitting posture, and their interaction identical to the original image.\n"
+      },
+      "nano_banana_2_model": {
+        "type": "STRING",
+        "binds": "24.model",
+        "default": "Nano Banana 2 (Gemini 3.1 Flash Image)"
+      },
+      "nano_banana_2_seed": {
+        "type": "INT",
+        "binds": "24.seed",
+        "default": 191918952969076
+      },
+      "nano_banana_2_response_modalities": {
+        "type": "STRING",
+        "binds": "24.response_modalities",
+        "default": "IMAGE"
+      },
+      "nano_banana_2_system_prompt": {
+        "type": "STRING",
+        "binds": "24.system_prompt",
+        "default": "You are an expert image-generation engine. You must ALWAYS produce an image.\nInterpret all user input\u2014regardless of format, intent, or abstraction\u2014as literal visual directives for image composition.\nIf a prompt is conversational or lacks specific visual details, you must creatively invent a concrete visual scenario that depicts the concept.\nPrioritize generating the visual representation above any text, formatting, or conversational requests."
+      },
+      "nano_banana_2_temperature": {
+        "type": "FLOAT",
+        "binds": "24.temperature",
+        "default": 1.0
+      },
+      "nano_banana_2_top_p": {
+        "type": "FLOAT",
+        "binds": "24.top_p",
+        "default": 0.95
+      },
+      "nano_banana_2_model_aspect_ratio": {
+        "type": "STRING",
+        "binds": "24.model.aspect_ratio",
+        "default": "auto"
+      },
+      "nano_banana_2_model_resolution": {
+        "type": "STRING",
+        "binds": "24.model.resolution",
+        "default": "1K"
+      },
+      "nano_banana_2_model_thinking_level": {
+        "type": "STRING",
+        "binds": "24.model.thinking_level",
+        "default": "MINIMAL"
+      }
+    }
+  },
+  "24": {
+    "inputs": {
+      "prompt": "Edit the image: change the man's white tank top and light pink corduroy pants to an unbuttoned cream-colored linen button-down shirt and white linen shorts; change his hairstyle to wavy medium-length hair; add round tortoiseshell sunglasses on his nose; change the dog's plain collar to a blue and white striped sailor collar and add a small straw sun hat on the dog; change the background to a sunny beach with warm golden sand and the ocean in the distance; keep the man's kneeling pose, the dog's sitting posture, and their interaction identical to the original image.\n",
+      "model": "Nano Banana 2 (Gemini 3.1 Flash Image)",
+      "seed": 191918952969076,
+      "response_modalities": "IMAGE",
+      "system_prompt": "You are an expert image-generation engine. You must ALWAYS produce an image.\nInterpret all user input\u2014regardless of format, intent, or abstraction\u2014as literal visual directives for image composition.\nIf a prompt is conversational or lacks specific visual details, you must creatively invent a concrete visual scenario that depicts the concept.\nPrioritize generating the visual representation above any text, formatting, or conversational requests.",
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "model.aspect_ratio": "auto",
+      "model.resolution": "1K",
+      "model.thinking_level": "MINIMAL",
+      "model.images.image_1": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "GeminiNanoBanana2V2",
+    "_meta": {
+      "title": "Nano Banana 2"
+    }
+  }
+}

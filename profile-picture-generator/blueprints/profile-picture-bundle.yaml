@@ -1,0 +1,28 @@
+output_prefix: outputs/profile-picture
+foreach:
+  - {id: "01", seed: 2026092201}
+  - {id: "02", seed: 2026092202}
+  - {id: "03", seed: 2026092203}
+  - {id: "04", seed: 2026092204}
+  - {id: "05", seed: 2026092205}
+  - {id: "06", seed: 2026092206}
+  - {id: "07", seed: 2026092207}
+  - {id: "08", seed: 2026092208}
+pipeline:
+  - fragment: profile-picture
+    alias: avatar
+    inputs:
+      nano_banana_2_model_images_image_1: $asset.sample-person.png
+    params:
+      nano_banana_2_model: Nano Banana 2 Lite
+      nano_banana_2_model_aspect_ratio: "1:1"
+      nano_banana_2_model_resolution: 1K
+      nano_banana_2_model_thinking_level: MINIMAL
+      nano_banana_2_prompt: >-
+        A square profile portrait in the selected style, preserving the exact
+        person and facial identity from the reference.
+      nano_banana_2_response_modalities: IMAGE
+      nano_banana_2_seed: $item.seed
+      nano_banana_2_system_prompt: Create one polished profile picture based on the reference image and prompt.
+      nano_banana_2_temperature: 0.8
+      nano_banana_2_top_p: 0.9
