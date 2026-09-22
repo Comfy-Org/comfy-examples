@@ -17,7 +17,7 @@ function client(key = apiKey()) {
   return new Comfy({ apiKey: key, clientInfo: "thread-and-form-virtual-try-on" });
 }
 
-const workflowPath = join(process.cwd(), "workflows", "virtual_try_on_api.json");
+const workflowPath = join(process.cwd(), "workflows", "workflow_open_api.json");
 
 async function serializeOutputs(job: Job): Promise<Output[]> {
   return Promise.all(job.outputs.map(async (output) => {
@@ -27,8 +27,7 @@ async function serializeOutputs(job: Job): Promise<Output[]> {
 }
 
 export async function submitTryOn(person: File, garment: File, garmentType: string) {
-  const key = apiKey();
-  const comfy = client(key);
+  const comfy = client();
   const workflow = await comfy.workflows.fromFile(workflowPath);
   const personAsset = comfy.assets.fromBytes(new Uint8Array(await person.arrayBuffer()), {
     filename: person.name,
@@ -39,11 +38,13 @@ export async function submitTryOn(person: File, garment: File, garmentType: stri
     contentType: garment.type,
   });
 
-  workflow.setInput("1", "image", personAsset);
-  workflow.setInput("2", "image", garmentAsset);
-  workflow.setInput("3", "prompt", promptFor(garmentType));
+  workflow.setInput("173", "image", personAsset);
+  workflow.setInput("174", "image", garmentAsset);
+  workflow.setInput("107", "prompt", promptFor(garmentType));
+  workflow.setInput("121", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  delete workflow.json._meta;
 
-  const job = await comfy.submit(workflow, { apiKey: key });
+  const job = await comfy.submit(workflow);
   return {
     id: job.id,
     status: job.status,

@@ -29,8 +29,8 @@ local storage; it does not create an account or cloud gallery.
 - [`components/room-remix.tsx`](components/room-remix.tsx) handles room and style selection, furniture placement, image upload, saving a local draft, and Comfy job polling.
 - [`app/api/jobs/route.ts`](app/api/jobs/route.ts) validates the image, style, and placed furniture; [`app/api/jobs/[id]/route.ts`](app/api/jobs/%5Bid%5D/route.ts) fetches job status.
 - [`lib/room-design.ts`](lib/room-design.ts) maps each style and furniture item into a prompt, including approximate left/center/right and foreground/back placement.
-- [`lib/comfy.ts`](lib/comfy.ts) loads [`blueprints/room-remix.compiled.json`](blueprints/room-remix.compiled.json), finds the `LoadImage` and `GeminiNanoBanana2V2` nodes by class, and binds the uploaded room to `151.image` and the generated design brief to `124.prompt`. The image is returned from `202.images`.
-- [`blueprints/room-remix.yaml`](blueprints/room-remix.yaml) composes [`fragments/room-remix-edit.json`](fragments/room-remix-edit.json); the app runs the compiled workflow. The checked-in [`workflows/nano_banana_edit.json`](workflows/nano_banana_edit.json) is a reference graph.
+- [`lib/comfy.ts`](lib/comfy.ts) binds the uploaded room to the `LoadImage` node, builds a prompt from the selected palette and furniture, and randomizes the sampler seed.
+- [`workflows/workflow_open_api.json`](workflows/workflow_open_api.json) is the open-weight Qwen Image Edit 2511 graph used by Comfy Cloud. The app changes its image, positive prompt, and sampler seed.
 
 The Comfy API key stays on the server. Each room makeover sends the selected
 photo to Comfy Cloud and uses the key owner's generation credits.

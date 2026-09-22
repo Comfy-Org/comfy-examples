@@ -4,12 +4,12 @@ import { getStation } from "./stations";
 
 type Track = { id: string; name: string; type: string; url: string };
 
-const workflowPath = join(process.cwd(), "blueprints", "radio.compiled.json");
+const workflowPath = join(process.cwd(), "workflows", "workflow_api.json");
 
 function client() {
   const apiKey = process.env.COMFY_API_KEY?.trim();
   if (!apiKey) throw new Error("Add COMFY_API_KEY to .env.local to generate a broadcast.");
-  return { apiKey, comfy: new Comfy({ apiKey, clientInfo: "comfy-radio" }) };
+  return new Comfy({ apiKey, clientInfo: "comfy-radio" });
 }
 
 async function audioOutputs(job: Job): Promise<Track[]> {
@@ -23,17 +23,21 @@ export async function submitBroadcast(stationId: string, prompt: string) {
   const station = getStation(stationId);
   if (!station) throw new Error("Tune to one of the five stations first.");
 
-  const { apiKey, comfy } = client();
+  const comfy = client();
   const workflow = await comfy.workflows.fromFile(workflowPath);
-  workflow.setInput("112", "value", `${station.prompt}\nListener's variation: ${prompt.trim()}`);
-  workflow.setInput("104", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  const musicPrompt = `${station.prompt}\nListener's variation: ${prompt.trim()}`;
+  workflow.setInput("94", "tags", musicPrompt);
+  workflow.setInput("94", "lyrics", "");
+  workflow.setInput("94", "duration", 30);
+  workflow.setInput("98", "seconds", 30);
+  workflow.setInput("3", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 
-  const job = await comfy.submit(workflow, { apiKey });
+  const job = await comfy.submit(workflow);
   return { id: job.id, status: job.status, outputs: await audioOutputs(job), error: job.error };
 }
 
 export async function getBroadcast(id: string) {
-  const { comfy } = client();
+  const comfy = client();
   const job = await comfy.jobs.get(id);
   return { id: job.id, status: job.status, outputs: await audioOutputs(job), error: job.error };
 }

@@ -44,18 +44,17 @@ test("image, theme, and selected-frame inputs enforce app limits", () => {
 });
 
 test("Cloud workflow graphs keep the storyboard, animation, and loop wiring connected", () => {
-  const storyboard = readWorkflow("storyboard_api.json");
-  assert.equal(storyboard["3"].class_type, "BatchImagesNode");
-  assert.deepEqual(storyboard["3"].inputs["images.image0"], ["1", 0]);
-  assert.deepEqual(storyboard["3"].inputs["images.image1"], ["2", 0]);
-  assert.deepEqual(storyboard["4"].inputs.images, ["3", 0]);
-  assert.deepEqual(storyboard["5"].inputs.images, ["4", 0]);
+  const storyboard = readWorkflow("storyboard_open_api.json");
+  assert.equal(storyboard["107"].class_type, "TextEncodeQwenImageEditPlus");
+  assert.deepEqual(storyboard["107"].inputs.image1, ["123", 0]);
+  assert.deepEqual(storyboard["107"].inputs.image2, ["174", 0]);
+  assert.deepEqual(storyboard["121"].inputs.positive, ["105", 0]);
+  assert.deepEqual(storyboard["124"].inputs.images, ["122", 0]);
 
-  const animation = readWorkflow("animation_api.json");
-  assert.equal(animation["2"].class_type, "ByteDance2ReferenceNodeV2");
-  assert.equal(animation["2"].inputs["model.generate_audio"], true);
-  assert.deepEqual(animation["2"].inputs["model.reference_images.image_1"], ["1", 0]);
-  assert.deepEqual(animation["3"].inputs.video, ["2", 0]);
+  const animation = readWorkflow("animation_open_api.json");
+  assert.equal(animation["105:104"].class_type, "MiniMaxH3ImageToVideo");
+  assert.deepEqual(animation["105:104"].inputs.first_frame, ["114", 0]);
+  assert.deepEqual(animation["92"].inputs.video, ["105:91", 0]);
 
   const assembly = readWorkflow("assemble_api.json");
   assert.equal(assembly["5"].class_type, "ConcatenateVideo");

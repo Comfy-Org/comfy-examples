@@ -24,9 +24,9 @@ Upload a protagonist, optionally add a rival, and enter a theme such as “a cou
 
 - [components/opening-machine.tsx](components/opening-machine.tsx) sends the character images and theme to `POST /api/storyboards`, then selected frame indexes to `POST /api/animations`.
 - [app/api/storyboards/route.ts](app/api/storyboards/route.ts), [app/api/animations/route.ts](app/api/animations/route.ts), and [app/api/assemble/route.ts](app/api/assemble/route.ts) validate and start the three stages.
-- [lib/comfy.ts](lib/comfy.ts) loads each API workflow and binds image node `1` plus prompt node `4` for storyboards, image node `1` plus `model.prompt` on node `2` for animation, and clip-file inputs `1`–`4` for assembly.
-- [lib/story.ts](lib/story.ts) writes a frame-specific prompt; the workflow graphs are [storyboard_api.json](workflows/storyboard_api.json), [animation_api.json](workflows/animation_api.json), and [assemble_api.json](workflows/assemble_api.json).
+- [lib/comfy.ts](lib/comfy.ts) loads each API workflow and binds the character images to Load Image nodes `173` and `174`, the frame prompt to Qwen node `107`, the first frame to MiniMax H3 node `105:104`, and selected clips to assembly slots `1`–`4`.
+- [lib/story.ts](lib/story.ts) writes a frame-specific prompt; the workflow graphs are [storyboard_open_api.json](workflows/storyboard_open_api.json), [animation_open_api.json](workflows/animation_open_api.json), and [assemble_api.json](workflows/assemble_api.json). These graphs use open-weight Comfy nodes and do not forward a partner API key.
 
 ## Workflow notes
 
-Eight separate image jobs give each storyboard frame its own prompt and seed. The Seedance 2.5 reference-to-video workflow makes five-second, 480p shots with generated audio. The assembly graph has four clip slots, so shorter selections repeat in order to fill the loop.
+Eight separate image jobs give each storyboard frame its own prompt and seed. Qwen Image Edit 2511 makes the storyboard frames; MiniMax H3 turns selected images into short video shots. Both are open-weight Comfy Cloud workflows. The assembly graph has four clip slots, so shorter selections repeat in order to fill the loop.

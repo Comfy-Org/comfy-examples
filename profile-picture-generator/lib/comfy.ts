@@ -7,7 +7,11 @@ import singleGraph from "../blueprints/profile-picture-single.compiled.json";
 
 const BUNDLE_SIZE = 8;
 
-type ApiNode = { class_type?: string; inputs?: Record<string, unknown> };
+type ApiNode = {
+  class_type?: string;
+  inputs?: Record<string, unknown>;
+  _meta?: { title?: string };
+};
 type BundleOutput = { id: string; name: string; type: string; url: string; index: number };
 
 function client() {
@@ -51,7 +55,6 @@ export async function submitProfilePortrait(portrait: File, styleId: StyleId, si
   if (!style) throw new Error("Choose one of the available styles.");
 
   const comfy = client();
-  const apiKey = process.env.COMFY_API_KEY!.trim();
   const graph = structuredClone(single ? singleGraph : bundleGraph) as Record<string, ApiNode>;
   // Compose metadata is provenance for the blueprint compiler, not an API node.
   delete graph._meta;
@@ -61,20 +64,23 @@ export async function submitProfilePortrait(portrait: File, styleId: StyleId, si
     filename: portrait.name || "portrait.png",
     contentType: portrait.type,
   });
-  const imageLoaders = Object.entries(graph).filter(([, node]) => node.class_type === "LoadImage");
-  const generators = Object.entries(graph).filter(([, node]) => node.class_type === "GeminiNanoBanana2V2");
+  const imageInputs = Object.entries(graph).filter(([, node]) => node.class_type === "FluxKontextImageScale");
+  const prompts = Object.entries(graph).filter(([, node]) =>
+    node.class_type === "TextEncodeQwenImageEditPlus" && node._meta?.title?.includes("(Positive)"),
+  );
+  const samplers = Object.entries(graph).filter(([, node]) => node.class_type === "KSampler");
   const expectedCount = single ? 1 : BUNDLE_SIZE;
-  if (imageLoaders.length !== expectedCount || generators.length !== expectedCount) {
+  if (imageInputs.length !== expectedCount || prompts.length !== expectedCount || samplers.length !== expectedCount) {
     throw new Error("The profile picture workflow is out of date. Rebuild it with npm run build:workflows.");
   }
 
-  imageLoaders.forEach(([nodeId]) => workflow.setInput(nodeId, "image", image));
-  generators.forEach(([nodeId], index) => {
+  imageInputs.forEach(([nodeId]) => workflow.setInput(nodeId, "image", image));
+  prompts.forEach(([nodeId], index) => {
     workflow.setInput(nodeId, "prompt", promptForStyle(style, index));
-    workflow.setInput(nodeId, "seed", randomInt(1, 2 ** 32 - 1));
   });
+  samplers.forEach(([nodeId]) => workflow.setInput(nodeId, "seed", randomInt(1, 2 ** 32 - 1)));
 
-  const job = await comfy.submit(workflow, { apiKey });
+  const job = await comfy.submit(workflow);
   const requestedCount = single ? 1 : BUNDLE_SIZE;
   const id = bundleIdFor(job.id, style.id, requestedCount);
   return {

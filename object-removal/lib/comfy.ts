@@ -5,11 +5,11 @@ type Output = { id: string; name: string; type: string; url: string };
 type Binding = readonly [nodeId: string, inputName: string];
 
 const workflow = {
-  path: join(process.cwd(), "workflows", "workflow_api.json"),
+  path: join(process.cwd(), "workflows", "flux_fill_api.json"),
   image: ["1", "image"] as Binding,
   mask: ["2", "image"] as Binding,
-  edgeExpansion: ["3", "dilate_pixels"] as Binding,
-  seed: ["3", "seed"] as Binding,
+  edgeExpansion: ["3", "expand"] as Binding,
+  seed: ["12", "seed"] as Binding,
 };
 
 function apiKey() {
@@ -44,8 +44,7 @@ async function serializeOutputs(job: Job): Promise<Output[]> {
 }
 
 export async function submitRemoval(image: File, mask: File, edgeExpansion: number) {
-  const partnerApiKey = apiKey();
-  const comfy = client(partnerApiKey);
+  const comfy = client(apiKey());
   const request = await comfy.workflows.fromFile(workflow.path);
   const imageAsset = comfy.assets.fromBytes(new Uint8Array(await image.arrayBuffer()), {
     filename: image.name,
@@ -61,7 +60,7 @@ export async function submitRemoval(image: File, mask: File, edgeExpansion: numb
   request.setInput(...workflow.edgeExpansion, edgeExpansion);
   request.setInput(...workflow.seed, randomSeed());
 
-  const job = await comfy.submit(request, { apiKey: partnerApiKey });
+  const job = await comfy.submit(request);
 
   return {
     id: job.id,

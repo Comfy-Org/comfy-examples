@@ -24,7 +24,7 @@ Upload a portrait, choose **Space Cowboy**, and make a bundle. Browse the eight 
 
 - [components/profile-picture-studio.tsx](components/profile-picture-studio.tsx) posts the portrait, style ID, and `bundle` or `single` mode to `POST /api/bundles`; [components/bundle-grid.tsx](components/bundle-grid.tsx) displays and downloads the returned images.
 - [app/api/bundles/route.ts](app/api/bundles/route.ts) validates the upload and style. [lib/styles.ts](lib/styles.ts) owns the five curated prompts; the browser sends style IDs rather than arbitrary prompts.
-- [lib/comfy.ts](lib/comfy.ts) loads the compiled graphs imported from [profile-picture-bundle.compiled.json](blueprints/profile-picture-bundle.compiled.json) and [profile-picture-single.compiled.json](blueprints/profile-picture-single.compiled.json). It finds `LoadImage` and `GeminiNanoBanana2V2` nodes by class, binds the upload to each image input, and sets each generator's prompt and seed. The editable compositions are [profile-picture-bundle.yaml](blueprints/profile-picture-bundle.yaml) and [profile-picture-single.yaml](blueprints/profile-picture-single.yaml).
+- [lib/comfy.ts](lib/comfy.ts) loads the open-weight graphs imported from [profile-picture-bundle.compiled.json](blueprints/profile-picture-bundle.compiled.json) and [profile-picture-single.compiled.json](blueprints/profile-picture-single.compiled.json). It binds the uploaded portrait, sets each positive Qwen image-edit prompt, and randomizes each sampler seed. The editable compositions are [profile-picture-bundle.yaml](blueprints/profile-picture-bundle.yaml) and [profile-picture-single.yaml](blueprints/profile-picture-single.yaml).
 
 ## Workflow notes
 

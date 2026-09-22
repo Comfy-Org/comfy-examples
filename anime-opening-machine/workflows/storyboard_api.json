@@ -1,7 +1,0 @@
-{
-  "1": { "class_type": "LoadImage", "inputs": { "image": "protagonist.png" } },
-  "2": { "class_type": "LoadImage", "inputs": { "image": "rival.png" } },
-  "3": { "class_type": "BatchImagesNode", "inputs": { "images.image0": ["1", 0], "images.image1": ["2", 0] } },
-  "4": { "class_type": "GeminiImage2Node", "inputs": { "images": ["3", 0], "prompt": "Anime opening storyboard key frame", "model": "gemini-3-pro-image-preview", "seed": 42, "aspect_ratio": "16:9", "resolution": "1K", "response_modalities": "IMAGE", "system_prompt": "Generate one polished anime illustration using the provided character references." } },
-  "5": { "class_type": "SaveImage", "inputs": { "images": ["4", 0], "filename_prefix": "AnimeOpening/Storyboard" } }
-}

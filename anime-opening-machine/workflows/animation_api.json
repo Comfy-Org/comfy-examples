@@ -1,5 +1,0 @@
-{
-  "1": { "class_type": "LoadImage", "inputs": { "image": "storyboard-frame.png" } },
-  "2": { "class_type": "ByteDance2ReferenceNodeV2", "inputs": { "model": "Seedance 2.5", "model.prompt": "Anime opening shot with fluid cinematic motion", "model.resolution": "480p", "model.ratio": "16:9", "model.duration": 5, "model.generate_audio": true, "model.task_type": "reference", "model.output_format": "mp4", "model.reference_images.image_1": ["1", 0], "model.auto_downscale": true, "model.auto_upscale": false, "seed": 42, "watermark": false } },
-  "3": { "class_type": "SaveVideo", "inputs": { "video": ["2", 0], "filename_prefix": "AnimeOpening/Shot", "format": "mp4", "format.codec": "h264", "format.codec.encoding": "auto" } }
-}

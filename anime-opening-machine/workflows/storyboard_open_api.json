@@ -8,6 +8,11 @@
       "image": "d10961e8629366e05951e566afa6ecfea9ba41c7765a843ee673264565b437b9.png"
     }
   },
+  "174": {
+    "class_type": "LoadImage",
+    "_meta": { "title": "Rival reference" },
+    "inputs": { "image": "rival.png" }
+  },
   "102": {
     "inputs": {
       "shift": 3.1,
@@ -91,6 +96,10 @@
       ],
       "image1": [
         "123",
+        0
+      ],
+      "image2": [
+        "174",
         0
       ]
     },
@@ -348,9 +357,5 @@
     "_meta": {
       "title": "Save Image (Advanced)"
     }
-  },
-  "_meta": {
-    "schema": "compose/1",
-    "blueprint": "/Users/stale2000/comfy/comfy-examples/profile-picture-generator/blueprints/profile-picture-single.yaml"
   }
 }

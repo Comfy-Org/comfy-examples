@@ -28,8 +28,8 @@ The radio returns a playable 30-second track.
 - [`components/radio-console.tsx`](components/radio-console.tsx) draws the cabinet and tuner, collects the station and listener's variation, and plays the returned audio.
 - [`app/api/jobs/route.ts`](app/api/jobs/route.ts) validates the station and prompt; [`app/api/jobs/[id]/route.ts`](app/api/jobs/%5Bid%5D/route.ts) polls the Comfy job.
 - [`lib/stations.ts`](lib/stations.ts) gives each frequency its own musical direction and example prompts.
-- [`lib/comfy.ts`](lib/comfy.ts) loads the runtime graph from [`blueprints/radio.compiled.json`](blueprints/radio.compiled.json), combines the station prompt with the listener's variation at `112.value`, and randomizes `104.seed`. The `121` Save Audio node produces the track.
-- [`blueprints/radio.yaml`](blueprints/radio.yaml) and [`fragments/radio-track.json`](fragments/radio-track.json) are the readable workflow source; compose the blueprint with `comfy workflow compose blueprints/radio.yaml` to regenerate the compiled graph used by the app.
+- [`lib/comfy.ts`](lib/comfy.ts) loads [`workflows/workflow_api.json`](workflows/workflow_api.json), combines the selected station and listener prompt at `94.tags`, sets a 30-second instrumental at both duration inputs, and randomizes `3.seed`.
+- [`workflows/ace-step-reference.json`](workflows/ace-step-reference.json) is the readable Comfy Cloud gallery workflow behind the API-format graph. It uses the open ACE-Step 1.5 workflow and contains no partner nodes.
 
 The Comfy key is used only on the server. Each generated track consumes the
 key owner's Comfy Cloud credits; the audio URL returned by Comfy is temporary.

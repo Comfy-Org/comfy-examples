@@ -4,7 +4,7 @@ import { smilePrompt, type SmileLevel } from "./smile";
 
 type Output = { id: string; name: string; type: string; url: string };
 
-const workflowPath = join(process.cwd(), "workflows", "workflow_api.json");
+const workflowPath = join(process.cwd(), "workflows", "workflow_open_api.json");
 
 function client() {
   const apiKey = process.env.COMFY_API_KEY?.trim();
@@ -20,18 +20,18 @@ async function serializeOutputs(job: Job): Promise<Output[]> {
 }
 
 export async function submitSmile(image: File, level: SmileLevel) {
-  const { apiKey, comfy } = client();
+  const { comfy } = client();
   const workflow = await comfy.workflows.fromFile(workflowPath);
   const asset = comfy.assets.fromBytes(new Uint8Array(await image.arrayBuffer()), {
     filename: image.name || "subject.png",
     contentType: image.type,
   });
 
-  workflow.setInput("16", "image", asset);
-  workflow.setInput("24", "prompt", smilePrompt(level));
-  workflow.setInput("24", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  workflow.setInput("41", "image", asset);
+  workflow.setInput("170:151", "prompt", smilePrompt(level));
+  workflow.setInput("170:169", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 
-  const job = await comfy.submit(workflow, { apiKey });
+  const job = await comfy.submit(workflow);
   return { id: job.id, status: job.status, outputs: await serializeOutputs(job), error: job.error };
 }
 

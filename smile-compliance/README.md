@@ -28,7 +28,8 @@ The app returns the edited image when Comfy Cloud finishes.
 - [`components/smile-station.tsx`](components/smile-station.tsx) handles the upload, before/after view, enthusiasm selector, and job polling.
 - [`app/api/jobs/route.ts`](app/api/jobs/route.ts) checks the image and selected level before submission; [`app/api/jobs/[id]/route.ts`](app/api/jobs/%5Bid%5D/route.ts) fetches job status.
 - [`lib/smile.ts`](lib/smile.ts) owns the three HR-approved levels and combines each level with the identity-preserving edit instructions.
-- [`lib/comfy.ts`](lib/comfy.ts) loads [`workflows/workflow_api.json`](workflows/workflow_api.json), uploads the image as an SDK asset, and binds it to `16.image`; the composed prompt goes to `24.prompt`, with `9.images` saved as output. [`workflows/reference.json`](workflows/reference.json) is the original gallery workflow.
+- [`lib/comfy.ts`](lib/comfy.ts) uploads the image as an SDK asset, adds the selected morale prompt, and randomizes the sampler seed.
+- [`workflows/workflow_open_api.json`](workflows/workflow_open_api.json) is the open-weight Qwen Image Edit 2511 graph used by Comfy Cloud; the app changes only its image, positive prompt, and seed.
 
 The Comfy key is read on the server and never sent to the browser. Each submitted
 edit uses the key owner's Comfy Cloud credits.

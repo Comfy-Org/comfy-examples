@@ -5,91 +5,499 @@
     "terminal": false,
     "source": "workflows/reference.json",
     "inputs": {
-      "nano_banana_2_model_images_image_1": {
+      "fluxkontextimagescale_image": {
         "type": "IMAGE",
-        "binds": "24.model.images.image_1"
+        "binds": "23.image"
       }
     },
-    "outputs": {
-      "image": {
-        "type": "IMAGE",
-        "from": "24",
-        "port": 0
-      }
-    },
+    "outputs": {},
     "params": {
-      "nano_banana_2_prompt": {
-        "type": "STRING",
-        "binds": "24.prompt",
-        "default": "Edit the image: change the man's white tank top and light pink corduroy pants to an unbuttoned cream-colored linen button-down shirt and white linen shorts; change his hairstyle to wavy medium-length hair; add round tortoiseshell sunglasses on his nose; change the dog's plain collar to a blue and white striped sailor collar and add a small straw sun hat on the dog; change the background to a sunny beach with warm golden sand and the ocean in the distance; keep the man's kneeling pose, the dog's sitting posture, and their interaction identical to the original image.\n"
+      "modelsamplingauraflow_shift": {
+        "type": "FLOAT",
+        "binds": "2.shift",
+        "default": 3.1
       },
-      "nano_banana_2_model": {
+      "modelsamplingauraflow_sampling": {
         "type": "STRING",
-        "binds": "24.model",
-        "default": "Nano Banana 2 (Gemini 3.1 Flash Image)"
+        "binds": "2.sampling",
+        "default": "flow"
       },
-      "nano_banana_2_seed": {
+      "load_vae_vae_name": {
+        "type": "STRING",
+        "binds": "3.vae_name",
+        "default": "qwen_image_vae.safetensors"
+      },
+      "edit_model_reference_method_reference_latents_method": {
+        "type": "STRING",
+        "binds": "4.reference_latents_method",
+        "default": "index_timestep_zero"
+      },
+      "edit_model_reference_method_reference_latents_method_2": {
+        "type": "STRING",
+        "binds": "5.reference_latents_method",
+        "default": "index_timestep_zero"
+      },
+      "text_encode_qwen_image_edit_plus_prompt": {
+        "type": "STRING",
+        "binds": "6.prompt",
+        "default": ""
+      },
+      "textencodeqwenimageeditplus_positive_prompt": {
+        "type": "STRING",
+        "binds": "7.prompt",
+        "default": "Convert this image to pop art poster style"
+      },
+      "cfgnorm_strength": {
         "type": "INT",
-        "binds": "24.seed",
-        "default": 191918952969076
+        "binds": "8.strength",
+        "default": 1
       },
-      "nano_banana_2_response_modalities": {
+      "cfgnorm_pre_cfg": {
+        "type": "BOOLEAN",
+        "binds": "8.pre_cfg",
+        "default": false
+      },
+      "load_lora_lora_name": {
         "type": "STRING",
-        "binds": "24.response_modalities",
-        "default": "IMAGE"
+        "binds": "9.lora_name",
+        "default": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors"
       },
-      "nano_banana_2_system_prompt": {
+      "load_lora_strength_model": {
+        "type": "INT",
+        "binds": "9.strength_model",
+        "default": 1
+      },
+      "cfg_value": {
+        "type": "INT",
+        "binds": "10.value",
+        "default": 4
+      },
+      "cfg_value_2": {
+        "type": "INT",
+        "binds": "11.value",
+        "default": 1
+      },
+      "load_diffusion_model_unet_name": {
         "type": "STRING",
-        "binds": "24.system_prompt",
-        "default": "You are an expert image-generation engine. You must ALWAYS produce an image.\nInterpret all user input\u2014regardless of format, intent, or abstraction\u2014as literal visual directives for image composition.\nIf a prompt is conversational or lacks specific visual details, you must creatively invent a concrete visual scenario that depicts the concept.\nPrioritize generating the visual representation above any text, formatting, or conversational requests."
+        "binds": "13.unet_name",
+        "default": "qwen_image_edit_2511_int8_convrot.safetensors"
       },
-      "nano_banana_2_temperature": {
-        "type": "FLOAT",
-        "binds": "24.temperature",
-        "default": 1.0
-      },
-      "nano_banana_2_top_p": {
-        "type": "FLOAT",
-        "binds": "24.top_p",
-        "default": 0.95
-      },
-      "nano_banana_2_model_aspect_ratio": {
+      "load_diffusion_model_weight_dtype": {
         "type": "STRING",
-        "binds": "24.model.aspect_ratio",
-        "default": "auto"
+        "binds": "13.weight_dtype",
+        "default": "default"
       },
-      "nano_banana_2_model_resolution": {
+      "load_clip_clip_name": {
         "type": "STRING",
-        "binds": "24.model.resolution",
-        "default": "1K"
+        "binds": "14.clip_name",
+        "default": "qwen_2.5_vl_7b_fp8_scaled.safetensors"
       },
-      "nano_banana_2_model_thinking_level": {
+      "load_clip_type": {
         "type": "STRING",
-        "binds": "24.model.thinking_level",
-        "default": "MINIMAL"
+        "binds": "14.type",
+        "default": "qwen_image"
+      },
+      "load_clip_device": {
+        "type": "STRING",
+        "binds": "14.device",
+        "default": "default"
+      },
+      "steps_value": {
+        "type": "INT",
+        "binds": "16.value",
+        "default": 4
+      },
+      "steps_value_2": {
+        "type": "INT",
+        "binds": "17.value",
+        "default": 40
+      },
+      "enable_4steps_lora_value": {
+        "type": "BOOLEAN",
+        "binds": "18.value",
+        "default": false
+      },
+      "ksampler_seed": {
+        "type": "INT",
+        "binds": "21.seed",
+        "default": 1119496583977398
+      },
+      "ksampler_sampler_name": {
+        "type": "STRING",
+        "binds": "21.sampler_name",
+        "default": "euler"
+      },
+      "ksampler_scheduler": {
+        "type": "STRING",
+        "binds": "21.scheduler",
+        "default": "simple"
+      },
+      "ksampler_denoise": {
+        "type": "INT",
+        "binds": "21.denoise",
+        "default": 1
+      },
+      "save_image_advanced_filename_prefix": {
+        "type": "STRING",
+        "binds": "24.filename_prefix",
+        "default": "Qwen_Edit_2511"
+      },
+      "save_image_advanced_format": {
+        "type": "STRING",
+        "binds": "24.format",
+        "default": "png"
+      },
+      "save_image_advanced_format_bit_depth": {
+        "type": "STRING",
+        "binds": "24.format.bit_depth",
+        "default": "8-bit"
+      },
+      "save_image_advanced_format_input_color_space": {
+        "type": "STRING",
+        "binds": "24.format.input_color_space",
+        "default": "sRGB"
       }
     }
   },
-  "24": {
+  "2": {
     "inputs": {
-      "prompt": "Edit the image: change the man's white tank top and light pink corduroy pants to an unbuttoned cream-colored linen button-down shirt and white linen shorts; change his hairstyle to wavy medium-length hair; add round tortoiseshell sunglasses on his nose; change the dog's plain collar to a blue and white striped sailor collar and add a small straw sun hat on the dog; change the background to a sunny beach with warm golden sand and the ocean in the distance; keep the man's kneeling pose, the dog's sitting posture, and their interaction identical to the original image.\n",
-      "model": "Nano Banana 2 (Gemini 3.1 Flash Image)",
-      "seed": 191918952969076,
-      "response_modalities": "IMAGE",
-      "system_prompt": "You are an expert image-generation engine. You must ALWAYS produce an image.\nInterpret all user input\u2014regardless of format, intent, or abstraction\u2014as literal visual directives for image composition.\nIf a prompt is conversational or lacks specific visual details, you must creatively invent a concrete visual scenario that depicts the concept.\nPrioritize generating the visual representation above any text, formatting, or conversational requests.",
-      "temperature": 1.0,
-      "top_p": 0.95,
-      "model.aspect_ratio": "auto",
-      "model.resolution": "1K",
-      "model.thinking_level": "MINIMAL",
-      "model.images.image_1": [
+      "shift": 3.1,
+      "sampling": "flow",
+      "model": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "ModelSamplingAuraFlow"
+    }
+  },
+  "3": {
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "4": {
+    "inputs": {
+      "reference_latents_method": "index_timestep_zero",
+      "conditioning": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "FluxKontextMultiReferenceLatentMethod",
+    "_meta": {
+      "title": "Edit Model Reference Method"
+    }
+  },
+  "5": {
+    "inputs": {
+      "reference_latents_method": "index_timestep_zero",
+      "conditioning": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "FluxKontextMultiReferenceLatentMethod",
+    "_meta": {
+      "title": "Edit Model Reference Method"
+    }
+  },
+  "6": {
+    "inputs": {
+      "prompt": "",
+      "clip": [
+        "14",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "image1": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImageEditPlus",
+    "_meta": {
+      "title": "Text Encode Qwen Image Edit Plus"
+    }
+  },
+  "7": {
+    "inputs": {
+      "prompt": "Convert this image to pop art poster style",
+      "clip": [
+        "14",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "image1": [
+        "23",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImageEditPlus",
+    "_meta": {
+      "title": "TextEncodeQwenImageEditPlus (Positive)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "strength": 1,
+      "pre_cfg": false,
+      "model": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "CFGNorm",
+    "_meta": {
+      "title": "CFGNorm"
+    }
+  },
+  "9": {
+    "inputs": {
+      "lora_name": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "strength_model": 1,
+      "model": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "10": {
+    "inputs": {
+      "value": 4
+    },
+    "class_type": "PrimitiveFloat",
+    "_meta": {
+      "title": "CFG"
+    }
+  },
+  "11": {
+    "inputs": {
+      "value": 1
+    },
+    "class_type": "PrimitiveFloat",
+    "_meta": {
+      "title": "CFG"
+    }
+  },
+  "12": {
+    "inputs": {
+      "pixels": [
+        "23",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "13": {
+    "inputs": {
+      "unet_name": "qwen_image_edit_2511_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "14": {
+    "inputs": {
+      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "15": {
+    "inputs": {
+      "switch": [
+        "18",
+        0
+      ],
+      "on_false": [
+        "8",
+        0
+      ],
+      "on_true": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "ComfySwitchNode",
+    "_meta": {
+      "title": "Switch (Model)"
+    }
+  },
+  "16": {
+    "inputs": {
+      "value": 4
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Steps"
+    }
+  },
+  "17": {
+    "inputs": {
+      "value": 40
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Steps"
+    }
+  },
+  "18": {
+    "inputs": {
+      "value": false
+    },
+    "class_type": "PrimitiveBoolean",
+    "_meta": {
+      "title": "Enable 4steps LoRA?"
+    }
+  },
+  "19": {
+    "inputs": {
+      "switch": [
+        "18",
+        0
+      ],
+      "on_false": [
+        "10",
+        0
+      ],
+      "on_true": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "ComfySwitchNode",
+    "_meta": {
+      "title": "Switch (CFG)"
+    }
+  },
+  "20": {
+    "inputs": {
+      "switch": [
+        "18",
+        0
+      ],
+      "on_false": [
+        "17",
+        0
+      ],
+      "on_true": [
         "16",
         0
       ]
     },
-    "class_type": "GeminiNanoBanana2V2",
+    "class_type": "ComfySwitchNode",
     "_meta": {
-      "title": "Nano Banana 2"
+      "title": "Switch (Steps)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "seed": 1119496583977398,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "15",
+        0
+      ],
+      "steps": [
+        "20",
+        0
+      ],
+      "cfg": [
+        "19",
+        0
+      ],
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "4",
+        0
+      ],
+      "latent_image": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "22": {
+    "inputs": {
+      "samples": [
+        "21",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "23": {
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "FluxKontextImageScale",
+    "_meta": {
+      "title": "FluxKontextImageScale"
+    }
+  },
+  "24": {
+    "inputs": {
+      "filename_prefix": "Qwen_Edit_2511",
+      "format": "png",
+      "images": [
+        "22",
+        0
+      ],
+      "format.bit_depth": "8-bit",
+      "format.input_color_space": "sRGB"
+    },
+    "class_type": "SaveImageAdvanced",
+    "_meta": {
+      "title": "Save Image (Advanced)"
     }
   }
 }
