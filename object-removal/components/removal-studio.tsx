@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, PointerEvent } from "react";
+import { canvasPoint, copyStrokes, drawPath, type Point, type Stroke } from "../lib/canvas";
 
-type Point = { x: number; y: number };
-type Stroke = { points: Point[]; width: number; erase: boolean };
 type SourceImage = { file: File; url: string; width: number; height: number };
 type Job = {
   id: string;
@@ -16,32 +15,6 @@ type Job = {
 const terminalStatuses = new Set(["succeeded", "failed", "canceled", "expired"]);
 const acceptedImageTypes = new Set(["image/png", "image/jpeg", "image/webp"]);
 const maxImageBytes = 15 * 1024 * 1024;
-
-function copyStrokes(strokes: Stroke[]): Stroke[] {
-  return strokes.map((stroke) => ({ ...stroke, points: stroke.points.map((point) => ({ ...point })) }));
-}
-
-function drawPath(context: CanvasRenderingContext2D, stroke: Stroke) {
-  const first = stroke.points[0];
-  if (!first) return;
-
-  context.lineWidth = stroke.width;
-  context.lineCap = "round";
-  context.lineJoin = "round";
-  context.beginPath();
-  context.moveTo(first.x, first.y);
-
-  if (stroke.points.length === 1) {
-    context.lineTo(first.x + 0.01, first.y + 0.01);
-  } else {
-    for (let index = 1; index < stroke.points.length; index++) {
-      const point = stroke.points[index];
-      context.lineTo(point.x, point.y);
-    }
-  }
-
-  context.stroke();
-}
 
 export function RemovalStudio() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -200,11 +173,7 @@ export function RemovalStudio() {
     const canvas = canvasRef.current;
     const currentSource = sourceRef.current;
     if (!canvas || !currentSource) return null;
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: Math.max(0, Math.min(currentSource.width, (event.clientX - rect.left) * currentSource.width / rect.width)),
-      y: Math.max(0, Math.min(currentSource.height, (event.clientY - rect.top) * currentSource.height / rect.height)),
-    };
+    return canvasPoint(event.clientX, event.clientY, canvas.getBoundingClientRect(), currentSource.width, currentSource.height);
   }
 
   function pointerDown(event: PointerEvent<HTMLCanvasElement>) {

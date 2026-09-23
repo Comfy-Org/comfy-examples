@@ -1,12 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { canvasPoint as mapCanvasPoint, cloneScene, drawStroke, findImageAtPoint, type CanvasImage, type Point, type Scene, type Stroke } from "../lib/canvas";
 
 type Tool = "select" | "brush" | "eraser";
-type Point = { x: number; y: number };
-type Stroke = { points: Point[]; width: number; erase: boolean; color: string };
-type CanvasImage = { id: string; src: string; x: number; y: number; width: number; height: number };
-type Scene = { strokes: Stroke[]; images: CanvasImage[] };
 type Job = { id: string; status: string; outputs: Array<{ name: string; url: string }>; error: { message: string } | null };
 
 const emptyScene: Scene = { strokes: [], images: [] };
@@ -34,10 +31,6 @@ type Gesture =
   | { kind: "drag"; id: string; offsetX: number; offsetY: number }
   | { kind: "resize"; id: string; startX: number; startY: number; startWidth: number; startHeight: number }
   | null;
-
-function cloneScene(scene: Scene): Scene {
-  return structuredClone(scene);
-}
 
 export function SketchStudio() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -116,17 +109,7 @@ export function SketchStudio() {
 
     context.lineCap = "round";
     context.lineJoin = "round";
-
-    for (const stroke of currentScene.strokes) {
-      if (stroke.points.length < 2) continue;
-      context.globalCompositeOperation = stroke.erase ? "destination-out" : "source-over";
-      context.strokeStyle = stroke.color;
-      context.lineWidth = stroke.width;
-      context.beginPath();
-      context.moveTo(stroke.points[0].x, stroke.points[0].y);
-      for (const point of stroke.points.slice(1)) context.lineTo(point.x, point.y);
-      context.stroke();
-    }
+    for (const stroke of currentScene.strokes) drawStroke(context, stroke);
 
     context.globalCompositeOperation = "source-over";
 
@@ -151,11 +134,7 @@ export function SketchStudio() {
   }, [drawScene]);
 
   function canvasPoint(event: React.PointerEvent<HTMLCanvasElement>): Point {
-    const rect = event.currentTarget.getBoundingClientRect();
-    return {
-      x: (event.clientX - rect.left) * (size.width / rect.width),
-      y: (event.clientY - rect.top) * (size.height / rect.height),
-    };
+    return mapCanvasPoint(event.clientX, event.clientY, event.currentTarget.getBoundingClientRect(), size.width, size.height);
   }
 
   function startGesture(event: React.PointerEvent<HTMLCanvasElement>) {
@@ -171,9 +150,7 @@ export function SketchStudio() {
       return;
     }
 
-    const target = [...sceneRef.current.images].reverse().find((item) => (
-      point.x >= item.x && point.x <= item.x + item.width && point.y >= item.y && point.y <= item.y + item.height
-    ));
+    const target = findImageAtPoint(sceneRef.current, point);
 
     if (!target) {
       setSelectedId(null);

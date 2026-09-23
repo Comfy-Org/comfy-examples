@@ -28,8 +28,8 @@ export async function submitBroadcast(stationId: string, prompt: string) {
   const musicPrompt = `${station.prompt}\nListener's variation: ${prompt.trim()}`;
   workflow.setInput("94", "tags", musicPrompt);
   workflow.setInput("94", "lyrics", "");
-  workflow.setInput("94", "duration", 30);
-  workflow.setInput("98", "seconds", 30);
+  workflow.setInput("94", "duration", 60);
+  workflow.setInput("98", "seconds", 60);
   workflow.setInput("3", "seed", Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 
   const job = await comfy.submit(workflow);

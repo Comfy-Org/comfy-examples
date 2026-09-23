@@ -55,6 +55,19 @@ export function RadioConsole() {
     if (audioRef.current) audioRef.current.volume = volume / 100;
   }, [volume, output?.url]);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !output?.url) return;
+
+    void audio.play().then(() => {
+      setPower(true);
+      setMessage("ON AIR · A BRAND NEW COMFY ORIGINAL.");
+    }).catch(() => {
+      setPower(false);
+      setMessage("TRACK READY. PRESS PLAY BROADCAST TO LISTEN.");
+    });
+  }, [output?.url]);
+
   function tune(index: number) {
     const next = Math.max(0, Math.min(stations.length - 1, index));
     if (next === stationIndex) return;
@@ -106,13 +119,11 @@ export function RadioConsole() {
     <main className="page-wrap">
       <header className="masthead">
         <a className="brand" href="#radio" aria-label="Comfy Radio home"><span className="brand-mark" aria-hidden="true">c</span><span>COMFY<br /><b>RADIO</b></span></a>
-        <div className="masthead-note"><span className="live-dot" /> CHESTNUT COVE BROADCAST</div>
-        <span className="serial">EST. 1947&nbsp; · &nbsp;FM / AM</span>
       </header>
 
       <section className={`radio-shell${power ? " is-on" : ""}`} id="radio" aria-label="Comfy Radio, a vintage tabletop radio">
         <div className="radio-art-frame">
-          <img className="radio-art" src="/vintage-radio.png" alt="A restored dark walnut tube radio with woven speaker cloth, a smoked amber tuning dial, and two bakelite knobs." width="1536" height="1024" />
+          <img className="radio-art" src="/vintage-radio.png" alt="A restored dark walnut tube radio with woven speaker cloth, a smoked amber tuning dial, and two bakelite knobs." width="1536" height="1024" draggable={false} />
 
           <div className="dial-overlay" aria-label="Radio station dial">
             <div className="dial-current">
@@ -140,19 +151,25 @@ export function RadioConsole() {
           </div>
 
           <div className="radio-power-area">
-            <button className={`power-button${busy ? " generating" : output ? " has-track" : ""}`} type="button" onClick={busy ? undefined : output && job?.status === "succeeded" ? play : generate} disabled={busy || prompt.trim().length < 8}>
+            <button
+              className={`power-button${busy ? " generating" : output ? " has-track" : ""}`}
+              type="button"
+              onClick={busy ? undefined : output && job?.status === "succeeded" ? play : generate}
+              disabled={busy || prompt.trim().length < 8}
+              aria-label={busy ? "Generating track" : output && job?.status === "succeeded" ? "Play generated track" : "Start track generation"}
+            >
               <span className="power-icon">{busy ? <i className="spinner" /> : output && job?.status === "succeeded" ? "▶" : "⏻"}</span>
-              <span><strong>{busy ? "WARMING THE TUBES" : output && job?.status === "succeeded" ? "PLAY BROADCAST" : "GENERATE NEW TRACK"}</strong><small>{busy ? job?.status === "running" ? "THE ORCHESTRA IS PLAYING…" : "PLEASE STAND BY" : "A COMFY ORIGINAL · ABOUT 30 SECONDS"}</small></span>
             </button>
+            <span className="power-label">START</span>
           </div>
         </div>
 
-        <div className="radio-status-line"><span className={`status-lamp${power && !busy ? " active" : ""}`} />{message}<span className="radio-status-mood">{station.mood}</span></div>
-        {output && job?.status === "succeeded" && <div className="audio-player"><span className="player-label">NOW PLAYING / {station.frequency} FM</span><audio ref={audioRef} src={output.url} controls onPlay={() => setPower(true)} onPause={() => setPower(false)} /></div>}
+        <div className="radio-status-line"><span className={`status-lamp${power && !busy ? " active" : ""}`} />{message}</div>
+        {output && job?.status === "succeeded" && <audio className="radio-audio" ref={audioRef} src={output.url} autoPlay onPlay={() => setPower(true)} onPause={() => setPower(false)} aria-label={`Now playing ${station.name}`} />}
       </section>
 
       <details className="studio">
-        <summary className="studio-summary"><span>STUDIO NOTES</span><span>Change the music direction&nbsp; · &nbsp;{station.name}</span><i aria-hidden="true">＋</i></summary>
+        <summary className="studio-summary"><span>CONTROLS</span><span>Choose a station and music direction</span><i aria-hidden="true">＋</i></summary>
         <div className="studio-grid">
           <div className="station-list" aria-label="Choose a station">
             {stations.map((item, index) => <button type="button" key={item.id} onClick={() => tune(index)} className={`station-row${stationIndex === index ? " current" : ""}`} aria-current={stationIndex === index ? "true" : undefined} disabled={busy}>
@@ -167,8 +184,6 @@ export function RadioConsole() {
           </div>
         </div>
       </details>
-
-      <footer className="footer"><span>COMFY RADIO / CR-05</span><span>FIVE LITTLE STATIONS, MADE ONE TUNE AT A TIME.</span><span>✳ CHESTNUT COVE</span></footer>
     </main>
   );
 }
