@@ -12,7 +12,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Unable to check job." },
-      { status: 400 },
+      { status: 502 },
     );
   }
 }

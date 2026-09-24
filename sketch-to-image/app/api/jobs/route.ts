@@ -45,10 +45,11 @@ export async function POST(request: Request) {
     return NextResponse.json(job, { status: 202 });
   } catch (error) {
     const isInvalidRequest = error instanceof InvalidRequest;
+    const unavailable = error instanceof Error && (error.message.includes("COMFY_API_KEY") || error.message.includes("API key"));
 
     return NextResponse.json(
       { error: isInvalidRequest ? error.message : "Unable to submit canvas." },
-      { status: isInvalidRequest ? 400 : 500 },
+      { status: isInvalidRequest ? 400 : unavailable ? 503 : 502 },
     );
   }
 }

@@ -37,6 +37,7 @@ export async function POST(request: Request) {
     const job = await submitConversation(figure, body.messages);
     return NextResponse.json(job, { status: 202 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit conversation." }, { status: 502 });
+    const message = error instanceof Error ? error.message : "Unable to submit conversation.";
+    return NextResponse.json({ error: message }, { status: message.includes("COMFY_API_KEY") || message.includes("API key") ? 503 : 502 });
   }
 }

@@ -1,0 +1,10 @@
+output_prefix: outputs/profile-picture
+pipeline:
+  - fragment: profile-picture
+    alias: avatar
+    inputs:
+      fluxkontextimagescale_image: $asset.sample-person.png
+    params:
+      textencodeqwenimageeditplus_positive_prompt: A square profile portrait preserving the person's face and identity from the reference.
+      ksampler_seed: 2026092201
+      enable_4steps_lora_value: true

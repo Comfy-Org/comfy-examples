@@ -1,48 +1,31 @@
 # Canvas to Image
 
+Draw or import a rough guide, describe the finished image, and render with Qwen image generation guided by ControlNet.
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FComfy-Org%2Fcomfy-examples%2Ftree%2Fmain%2Fsketch-to-image&env=COMFY_API_KEY&envDescription=Enter+your+Comfy+API+key.)
-
-Draw or import a guide, describe the result, and generate an image.
-
-Requires Node.js 22+ and a
-[Comfy API key](https://platform.comfy.org/profile/api-keys).
 
 ## Run locally
 
+Requires Node.js 22 or newer and a Comfy API key.
+
 ```bash
 cp .env.example .env.local
-npm install
+# Set COMFY_API_KEY in .env.local
+npm ci
 npm run dev
 ```
 
-Add `COMFY_API_KEY` to `.env.local`. The example uses Comfy Cloud by default.
+Open the local URL printed by Next.js. `.env.example` also documents the optional `COMFY_BASE_URL` override for a Comfy deployment or compatible proxy; otherwise the SDK uses Comfy Cloud.
 
-## Workflow
+## Try it
 
-The Qwen ControlNet workflow binds:
+Draw a simple scene or import a guide, enter a prompt, then use **Render image** (or enable **Live preview**). Adjust **Structure** to change how closely the result follows the guide; download the finished image from the result panel.
 
-```text
-guide image → LoadImage (121.image)
-prompt      → CLIPTextEncode (86:81.text)
-structure   → ControlNetApplyAdvanced (86:129.strength)
-```
+## Code tour
 
-To swap the workflow, replace `workflows/workflow_api.json` and update its
-bindings in [lib/comfy.ts](lib/comfy.ts).
+- [components/sketch-studio.tsx](components/sketch-studio.tsx) draws or imports the guide and sends its PNG, prompt, and structure value to `POST /api/jobs`; it polls `GET /api/jobs/[id]` for results.
+- [app/api/jobs/route.ts](app/api/jobs/route.ts) validates the canvas and adds prompt hints from the selected sketch colors. [app/api/jobs/[id]/route.ts](app/api/jobs/%5Bid%5D/route.ts) returns job status.
+- [lib/comfy.ts](lib/comfy.ts) uploads the PNG as an SDK asset and binds `121.image`, `86:81.text`, `86:129.strength`, and a random value to `86:3.seed`.
+- [workflows/workflow_api.json](workflows/workflow_api.json) is the exported Qwen/ControlNet graph behind those bindings.
 
-## Run on Developer Platform
-
-Use a Developer Platform deployment when the replacement workflow needs custom
-nodes or models. First install and test those dependencies in local ComfyUI,
-then run from that ComfyUI directory:
-
-```bash
-comfy cloud login
-comfy build init --name sketch-to-image
-comfy build push --release --target linux/nvidia
-comfy deploy up --watch
-comfy deploy ls
-```
-
-Set `COMFY_BASE_URL` to the deployment's `https://dep-...run.comfy.app`
-endpoint. Keep the same `COMFY_API_KEY`.
+`COMFY_API_KEY` stays on the server. Each render uses credits from the configured Comfy account; live preview can submit additional renders as you edit.
